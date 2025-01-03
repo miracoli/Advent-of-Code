@@ -1,24 +1,28 @@
-## First Part:
+GitHub does not natively support MathJax or LaTeX for rendering equations, so formulas must be written using plain text and simple Markdown. Here's an adjusted version that works better with GitHub's limitations:
 
-1. Read the whole input as one big string.
-2. Extract movements for buttons (A, B) and the prize using a regex over multiple lines.
-3. Instead of brute-forcing values we can do equation solving:
+---
 
-    For each match, it solves the system of linear equations:
+## First Part
 
-    - $$ \left( a \cdot ax + b \cdot bx = X \right)$$
+1. Read the entire input as a single string.
+2. Use a regular expression to extract button positions (A, B) and the prize coordinates.
+3. Solve a system of linear equations for each match:
+   - `a * ax + b * bx = X`
+   - `a * ay + b * by = Y`
 
-    - $$ \left( a \cdot ay + b \cdot by = Y \right)$$
+   These equations describe how the prize coordinates `(X, Y)` are a linear combination of the button positions. The coefficients `a` and `b` are calculated as:
 
-    These equations represent how the prize coordinates $ \left( (X, Y) \right)$ are derived as linear combinations of the button coordinates. The coefficients $ \left( a \right)$ and $ \left( b \right)$ are unknowns solved using algebraic manipulation:
+   - `b = (Y * ax - X * ay) / (by * ax - bx * ay)`
+   - `a = (X - b * bx) / ax`
 
-    - $$ \left( b = \frac{(Y \cdot ax - X \cdot ay)}{(by \cdot ax - bx \cdot ay)} \right)$$
-    - $$ \left( a = \frac{(X - b \cdot bx)}{ax} \right)$$
-   
-    The code verifies that the calculated $ \left( a \right)$ and $ \left( b \right)$ satisfy both equations before proceeding.
+   The code verifies that these values satisfy both equations before proceeding.
 
-4. For valid solutions, the result $ \left( 3 \cdot a + b \right)$ is computed and added to the total.
+4. For valid solutions, compute the result as `3 * a + b` and add it to the total.
 
-## Second Part:
+## Second Part
 
-Same as Part One, with 10000000000000 added to X and Y.
+Same as Part One, but with `10000000000000` added to `X` and `Y`.
+
+---
+
+This format avoids special characters that GitHub cannot render and ensures the formulas are displayed in a readable format.
