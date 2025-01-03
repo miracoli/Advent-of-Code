@@ -6,17 +6,18 @@
 
     For each match, it solves the system of linear equations:
 
-    - \( a \cdot ax + b \cdot bx = X \)
-    - \( a \cdot ay + b \cdot by = Y \)
+    - $$ \left( a \cdot ax + b \cdot bx = X \right)$$
 
-    These equations represent how the prize coordinates \( (X, Y) \) are derived as linear combinations of the button coordinates. The coefficients \( a \) and \( b \) are unknowns solved using algebraic manipulation:
+    - $$ \left( a \cdot ay + b \cdot by = Y \right)$$
 
-    - \( b = \frac{(Y \cdot ax - X \cdot ay)}{(by \cdot ax - bx \cdot ay)} \)
-    - \( a = \frac{(X - b \cdot bx)}{ax} \)
+    These equations represent how the prize coordinates $ \left( (X, Y) \right)$ are derived as linear combinations of the button coordinates. The coefficients $ \left( a \right)$ and $ \left( b \right)$ are unknowns solved using algebraic manipulation:
+
+    - $$ \left( b = \frac{(Y \cdot ax - X \cdot ay)}{(by \cdot ax - bx \cdot ay)} \right)$$
+    - $$ \left( a = \frac{(X - b \cdot bx)}{ax} \right)$$
    
-    The code verifies that the calculated \( a \) and \( b \) satisfy both equations before proceeding.
+    The code verifies that the calculated $ \left( a \right)$ and $ \left( b \right)$ satisfy both equations before proceeding.
 
-4. For valid solutions, the result \( 3 \cdot a + b \) is computed and added to the total.
+4. For valid solutions, the result $ \left( 3 \cdot a + b \right)$ is computed and added to the total.
 
 ## Second Part:
 
