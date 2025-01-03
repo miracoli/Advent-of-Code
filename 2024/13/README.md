@@ -1,12 +1,8 @@
-GitHub does not natively support MathJax or LaTeX for rendering equations, so formulas must be written using plain text and simple Markdown. Here's an adjusted version that works better with GitHub's limitations:
-
----
-
 ## First Part
 
 1. Read the entire input as a single string.
 2. Use a regular expression to extract button positions (A, B) and the prize coordinates.
-3. Solve a system of linear equations for each match:
+3. Instead of brute-forcing values for A and B solve a system of linear equations for each match:
    - `a * ax + b * bx = X`
    - `a * ay + b * by = Y`
 
@@ -22,7 +18,3 @@ GitHub does not natively support MathJax or LaTeX for rendering equations, so fo
 ## Second Part
 
 Same as Part One, but with `10000000000000` added to `X` and `Y`.
-
----
-
-This format avoids special characters that GitHub cannot render and ensures the formulas are displayed in a readable format.
