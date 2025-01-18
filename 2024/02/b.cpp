@@ -2,8 +2,20 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include <cmath>
 #include <iterator>
+#include <ranges>
+
+bool isValid(auto&& nums, bool wrongSign, int skip = -1) {
+  auto filtered = nums | std::views::filter([&](auto& e) { return skip < 0 || &e != &nums[skip]; });
+  auto it = filtered.begin();
+  for (auto prev = *it++, index = 1; it != filtered.end(); prev = *it++, ++index) {
+    int diff = *it - prev;
+    if (std::abs(diff) < 1 || std::abs(diff) > 3 || std::signbit(diff) == wrongSign) {
+      return skip < 0 && (isValid(nums, wrongSign, index) || isValid(nums, wrongSign, index - 1));
+    }
+  }
+  return true;
+}
 
 int main() {
   std::ifstream file("input.txt");
@@ -17,25 +29,9 @@ int main() {
   for (std::string line; std::getline(file, line);) {
     std::istringstream iss(line);
     std::vector<int> nums{std::istream_iterator<int>(iss), {}};
-    bool isValidLine = false;
-    for (size_t skipIndex = 0; skipIndex < nums.size() && !isValidLine; ++skipIndex) {
-      int prev = nums[(skipIndex) ? 0 : 1];
-      int next = ((skipIndex <= 1) ? 2 : 1);
-      bool wrongSign = !std::signbit(nums[next] - prev);
-      bool isValidSkip = true;
-      for (size_t i = next; i < nums.size() && isValidSkip; ++i) {
-        if (i == skipIndex) {
-          continue;
-        }
-        int diff = nums[i] - prev;
-        isValidSkip = !(std::abs(diff) < 1 || std::abs(diff) > 3 || std::signbit(diff) == wrongSign);
-        prev = nums[i];
-      }
-      isValidLine = isValidSkip;
-    }
-    validCount += isValidLine;
+    bool wrongSign = (std::signbit(nums[1] - nums[0]) + std::signbit(nums[2] - nums[1]) + std::signbit(nums[3] - nums[2])) < 2;
+    validCount += isValid(nums, wrongSign);
   }
 
   std::cout << validCount << '\n';
-  return 0;
 }

@@ -6,4 +6,4 @@
 
 ### Second Part:
 
-- Same as the first part, but attempts to skip each element in the line one by one to find a valid sequence.
+- Similar to the first approach, but if an error is detected, we evaluate whether skipping the current or previous element restores the sequence's validity.
