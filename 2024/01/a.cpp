@@ -3,7 +3,6 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
-#include <cmath>
 
 int main() {
   std::ifstream inputFile("input.txt");
@@ -16,6 +15,4 @@ int main() {
   std::sort(list2.begin(), list2.end());
 
   std::cout << std::inner_product(list1.begin(), list1.end(), list2.begin(), 0, std::plus<>(), [](int a, int b) { return std::abs(a - b); }) << '\n';
-
-  return 0;
 }
