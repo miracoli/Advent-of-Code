@@ -56,6 +56,5 @@ int main() {
     map[py][px] = '.'; // Remove obstacle
   }
 
-  cout << "Number of visited positions causing endless loops: " << endlessLoopCount << endl;
-  return 0;
+  cout << endlessLoopCount << endl;
 }

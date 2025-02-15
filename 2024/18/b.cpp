@@ -32,7 +32,8 @@ int main() {
         solvable = false;
         queue<pair<int, int>> positions({{0, 0}});
         while (!positions.empty()) {
-            auto [xCoord, yCoord] = positions.front(); positions.pop();
+            auto [xCoord, yCoord] = positions.front();
+            positions.pop();
             if (xCoord == 70 && yCoord == 70) {
                 solvable = true;
                 break;
@@ -42,11 +43,10 @@ int main() {
                 int newX = xCoord + DIRECTIONS[i], newY = yCoord + DIRECTIONS[(i + 3) & 3];
                 if (newX >= 0 && newX < 71 && newY >= 0 && newY < 71 && !grid[newX][newY] && dist[newX][newY] == -1) {
                     dist[newX][newY] = dist[xCoord][yCoord] + 1;
-                    positions.push({newX, newY});
+                    positions.emplace(newX, newY);
                 }
             }
         }
     }
     cout << xCoord << "," << yCoord << endl;
-    return 0;
 }

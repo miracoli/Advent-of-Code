@@ -15,11 +15,9 @@ int main() {
   }
 
   unordered_map<uint64_t, uint64_t> stones;
-  uint64_t num, blinks = 25;
+  int blinks = 25;
 
-  while (inputFile >> num) {
-    stones[num]++;
-  }
+  for (int num; inputFile >> num; stones[num]++);
 
   while (blinks--) {
     unordered_map<uint64_t, uint64_t> next;
@@ -41,6 +39,4 @@ int main() {
   }
 
   cout << accumulate(stones.begin(), stones.end(), 0LL, [](long long sum, const auto& p) { return sum + p.second; })<< endl;
-
-  return 0;
 }

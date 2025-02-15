@@ -26,5 +26,4 @@ int main() {
   }
 
   std::cout << validCount << std::endl;
-  return 0;
 }

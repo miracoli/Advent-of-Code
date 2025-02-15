@@ -33,5 +33,4 @@ int main() {
   }
 
   cout << visited.size() << endl;
-  return 0;
 }
