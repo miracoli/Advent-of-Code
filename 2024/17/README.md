@@ -58,14 +58,14 @@ is interpreted as eight pairs of (opcode, operand). Mapping each pair according 
 
 Putting it all together in short form:
 
-B = A % 8
-B = B XOR 5
-C = A / 2^(B)
-B = B XOR 6
-B = B XOR C
-OUT B
-A = A / 2^3
-if A != 0 JMP 0
+    B = A % 8
+    B = B XOR 5
+    C = A / 2^(B)
+    B = B XOR 6
+    B = B XOR C
+    OUT B
+    A = A / 2^3
+    if A != 0 JMP 0
 
 #### Key Observations
 1. **Dependency Chain**: 
