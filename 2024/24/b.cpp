@@ -47,6 +47,19 @@ int main() {
     }
   };
 
+  auto findGateOutputs = [&](int i) {
+    for (const auto &[out_gate, gate_gate] : gates) {
+      if (ds[i].empty() && std::get<0>(gate_gate) == "AND" && ((as[i - 1] == std::get<1>(gate_gate) && cs[i - 1] == std::get<2>(gate_gate)) || (as[i - 1] == std::get<2>(gate_gate) && cs[i - 1] == std::get<1>(gate_gate)))) {
+        ds[i] = out_gate; break;
+      } else if (!ds[i].empty() && cs[i].empty() && std::get<0>(gate_gate) == "OR" && ((bs[i - 1] == std::get<1>(gate_gate) && ds[i] == std::get<2>(gate_gate)) || (bs[i - 1] == std::get<2>(gate_gate) && ds[i] == std::get<1>(gate_gate)))) {
+        cs[i] = out_gate; break;
+      } else if (!cs[i].empty() && std::get<0>(gate_gate) == "XOR" && ((as[i] == std::get<1>(gate_gate) && cs[i] == std::get<2>(gate_gate)) || (as[i] == std::get<2>(gate_gate) && cs[i] == std::get<1>(gate_gate)))) {
+        return out_gate;
+      }
+    }
+    return std::string{};
+  };
+
   auto gate = gates.at("z00");
   std::string& in1 = std::get<1>(gate), &in2 = std::get<2>(gate);
   if (std::get<0>(gate) != "XOR" || !((in1 == "x00" && in2 == "y00") || (in1 == "y00" && in2 == "x00"))) {
@@ -62,18 +75,7 @@ int main() {
       ds[i] = cs[i] = "";
       std::string labelSwap;
       while(labelSwap.empty()) {
-        for (const auto &[out_gate, gate_gate] : gates) {
-          if (ds[i].empty() && std::get<0>(gate_gate) == "AND" && ((as[i - 1] == std::get<1>(gate_gate) && cs[i - 1] == std::get<2>(gate_gate)) || (as[i - 1] == std::get<2>(gate_gate) && cs[i - 1] == std::get<1>(gate_gate)))) {
-            ds[i] = out_gate;
-            break;
-          } else if (cs[i].empty() && !ds[i].empty() && std::get<0>(gate_gate) == "OR" && ((bs[i - 1] == std::get<1>(gate_gate) && ds[i] == std::get<2>(gate_gate)) || (bs[i - 1] == std::get<2>(gate_gate) && ds[i] == std::get<1>(gate_gate)))) {
-            cs[i] = out_gate;
-            break;
-          } else if (!cs[i].empty() && std::get<0>(gate_gate) == "XOR" && ((as[i] == std::get<1>(gate_gate) && cs[i] == std::get<2>(gate_gate)) || (as[i] == std::get<2>(gate_gate) && cs[i] == std::get<1>(gate_gate)))) {
-            labelSwap = out_gate;
-            break;
-          }
-        }
+        labelSwap = findGateOutputs(i);
       }
       wrong.insert(wrong.end(), {labelSwap, label});
       gateSwap(label, labelSwap);
@@ -84,15 +86,7 @@ int main() {
     }
 
     while(cs[i].empty()) {
-      for (const auto &[out_gate, gate_gate] : gates) {
-        if (ds[i].empty() && std::get<0>(gate_gate) == "AND" && ((as[i - 1] == std::get<1>(gate_gate) && cs[i - 1] == std::get<2>(gate_gate)) || (as[i - 1] == std::get<2>(gate_gate) && cs[i - 1] == std::get<1>(gate_gate)))) {
-          ds[i] = out_gate;
-          break;
-        } else if (!ds[i].empty() && std::get<0>(gate_gate) == "OR" && ((bs[i - 1] == std::get<1>(gate_gate) && ds[i] == std::get<2>(gate_gate)) || (bs[i - 1] == std::get<2>(gate_gate) && ds[i] == std::get<1>(gate_gate)))) {
-          cs[i] = out_gate;
-          break;
-        }
-      }
+      findGateOutputs(i);
     }
   }
 
