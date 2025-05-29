@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <iterator>
 using namespace std;
 
 constexpr string TARGET = "XMAS";
