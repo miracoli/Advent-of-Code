@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <queue>
 #include <tuple>
+#include <cstdint>
 using namespace std;
 
 int main() {

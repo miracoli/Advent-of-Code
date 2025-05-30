@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <iterator>
 
 int main() {
   std::ifstream file("input.txt");

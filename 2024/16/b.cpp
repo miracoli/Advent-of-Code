@@ -5,6 +5,8 @@
 #include <queue>
 #include <set>
 #include <string>
+#include <limits>
+#include <cstdint>
 
 using namespace std;
 

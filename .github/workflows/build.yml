@@ -1,0 +1,28 @@
+name: Build C++ solutions
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clang
+        if: matrix.compiler == 'clang++'
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Compile all solutions
+        run: |
+          set -e
+          for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
+            dir=$(dirname "$cpp")
+            base=$(basename "$cpp" .cpp)
+            out_dir="build/${{ matrix.compiler }}/$dir"
+            mkdir -p "$out_dir"
+            ${{ matrix.compiler }} -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
+          done

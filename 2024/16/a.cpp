@@ -5,6 +5,7 @@
 #include <limits>
 #include <string>
 #include <tuple>
+#include <cstdint>
 
 using namespace std;
 

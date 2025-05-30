@@ -3,6 +3,8 @@
 #include <vector>
 #include <sstream>
 #include <ranges>
+#include <iterator>
+#include <cmath>
 
 bool isValid(auto&& nums, bool wrongSign, int skip = -1) {
   auto filtered = nums | std::views::filter([&](auto& e) { return skip < 0 || &e != &nums[skip]; });
