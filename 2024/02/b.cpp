@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <ranges>
+#include <iterator>
 #include <cmath>
 
 bool isValid(auto&& nums, bool wrongSign, int skip = -1) {

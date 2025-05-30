@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cstdint>
 #include <iterator>
 
 using namespace std;

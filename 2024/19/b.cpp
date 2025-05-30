@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <string_view>
+#include <cstdint>
 
 std::unordered_map<std::string_view, uint64_t> memo;
 std::vector<std::string> patterns, designs;

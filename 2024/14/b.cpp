@@ -3,6 +3,8 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include <cstdint>
+#include <cstdio>
 
 int main() {
   const int width = 101;

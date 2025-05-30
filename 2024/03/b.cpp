@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <string>
+#include <iterator>
+#include <cstdint>
 
 int main() {
   std::ifstream file("input.txt");
