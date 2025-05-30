@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,6 +14,12 @@ jobs:
         compiler: [g++, clang++]
     steps:
       - uses: actions/checkout@v3
+      - name: Install g++-13
+        if: matrix.compiler == 'g++'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-13
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
       - name: Install clang
         if: matrix.compiler == 'clang++'
         run: sudo apt-get update && sudo apt-get install -y clang
