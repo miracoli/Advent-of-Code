@@ -14,12 +14,12 @@ jobs:
         compiler: [g++, clang++]
     steps:
       - uses: actions/checkout@v3
-      - name: Install g++-13
+      - name: Install g++-14
         if: matrix.compiler == 'g++'
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-13
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+          sudo apt-get install -y g++-14
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
       - name: Install clang
         if: matrix.compiler == 'clang++'
         run: sudo apt-get update && sudo apt-get install -y clang
