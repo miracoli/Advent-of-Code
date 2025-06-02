@@ -36,7 +36,7 @@ jobs:
           done
           echo '</table></body></html>' >> site/index.html
       - name: Upload pages artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: site
@@ -49,7 +49,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: github-pages
       - id: deployment
