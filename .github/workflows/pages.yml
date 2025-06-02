@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v4
       - name: Generate index.html
         run: |
           mkdir -p site
@@ -34,8 +35,10 @@ jobs:
             echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td></tr>" >> site/index.html
           done
           echo '</table></body></html>' >> site/index.html
-      - uses: actions/upload-pages-artifact@v1
+      - name: Upload pages artifact
+        uses: actions/upload-artifact@v3
         with:
+          name: github-pages
           path: site
 
   deploy:
@@ -45,6 +48,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: github-pages
       - id: deployment
         uses: actions/deploy-pages@v1
 
