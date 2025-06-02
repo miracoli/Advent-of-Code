@@ -1,0 +1,54 @@
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Generate index.html
+        run: |
+          mkdir -p site
+          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>' > site/index.html
+          echo '<table border="1">' >> site/index.html
+          echo '<tr><th>Day</th><th>a.cpp lines</th><th>b.cpp lines</th></tr>' >> site/index.html
+          for day in $(seq -w 1 25); do
+            dir="2024/$day"
+            a_lines=""
+            b_lines=""
+            if [ -f "$dir/a.cpp" ]; then
+              a_lines=$(wc -l < "$dir/a.cpp" | xargs)
+            fi
+            if [ -f "$dir/b.cpp" ]; then
+              b_lines=$(wc -l < "$dir/b.cpp" | xargs)
+            fi
+            echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td></tr>" >> site/index.html
+          done
+          echo '</table></body></html>' >> site/index.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
