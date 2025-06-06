@@ -47,6 +47,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
       - name: Compile all solutions (MSVC)
         if: matrix.compiler == 'cl'
+        env:
+          MSYS2_ARG_CONV_EXCL: '*'
         run: |
           set -e
           for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
