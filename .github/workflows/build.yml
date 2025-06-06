@@ -47,9 +47,11 @@ jobs:
           for day in $(seq -w 1 25); do
             dir="2024/$day"
             if [ -f "$dir/a.cpp" ]; then
+              echo "Running $dir/a"
               (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/a)
             fi
             if [ -f "$dir/b.cpp" ]; then
+              echo "Running $dir/b"
               (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b)
             fi
           done
