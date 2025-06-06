@@ -45,13 +45,13 @@ jobs:
             if [ -f "$dir/a.cpp" ]; then
               a_lines=$(wc -l < "$dir/a.cpp" | xargs)
               (cd "$dir" && g++ -std=c++23 -O2 a.cpp -o a)
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./a --export-json /tmp/a.json > /dev/null)
+              (cd "$dir" && hyperfine --show-output -N -u microsecond -w 50 -r 50 ./a --export-json /tmp/a.json > /dev/null)
               a_time=$(jq '.results[0].mean' /tmp/a.json)
             fi
             if [ -f "$dir/b.cpp" ]; then
               b_lines=$(wc -l < "$dir/b.cpp" | xargs)
               (cd "$dir" && g++ -std=c++23 -O2 b.cpp -o b)
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./b --export-json /tmp/b.json > /dev/null)
+              (cd "$dir" && hyperfine --show-output -N -u microsecond -w 50 -r 50 ./b --export-json /tmp/b.json > /dev/null)
               b_time=$(jq '.results[0].mean' /tmp/b.json)
             fi
             echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
