@@ -80,11 +80,11 @@ jobs:
             dir="2024/$day"
             if [ -f "$dir/a.cpp" ]; then
               echo "Running $dir/a with hyperfine"
-              (cd "$dir" && hyperfine -N -u microseconds -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/a)
+              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/a)
             fi
             if [ -f "$dir/b.cpp" ]; then
               echo "Running $dir/b with hyperfine"
-              (cd "$dir" && hyperfine -N -u microseconds -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/b)
+              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/b)
             fi
           done
       - name: Run all solutions
