@@ -12,8 +12,16 @@ jobs:
     strategy:
       matrix:
         compiler: [g++, clang++]
+    env:
+      GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install git-crypt
+        run: sudo apt-get update && sudo apt-get install -y git-crypt
+      - name: Unlock encrypted inputs
+        run: |
+          echo "$GITCRYPT_KEY_B64" | base64 --decode > gitcrypt.key
+          git-crypt unlock gitcrypt.key
       - name: Install g++-14
         if: matrix.compiler == 'g++'
         run: |
@@ -32,4 +40,16 @@ jobs:
             out_dir="build/${{ matrix.compiler }}/$dir"
             mkdir -p "$out_dir"
             ${{ matrix.compiler }} -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
+          done
+      - name: Run all solutions
+        run: |
+          set -e
+          for day in $(seq -w 1 25); do
+            dir="2024/$day"
+            if [ -f "$dir/a.cpp" ]; then
+              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/a)
+            fi
+            if [ -f "$dir/b.cpp" ]; then
+              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b)
+            fi
           done
