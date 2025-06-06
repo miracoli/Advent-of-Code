@@ -8,17 +8,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        compiler: [g++, clang++]
+        include:
+          - os: ubuntu-latest
+            compiler: g++
+          - os: ubuntu-latest
+            compiler: clang++
+          - os: windows-latest
+            compiler: cl
     env:
       GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v3
       - name: Install git-crypt
+        if: runner.os != 'Windows'
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
+        if: runner.os != 'Windows'
         run: |
           echo "$GITCRYPT_KEY_B64" | base64 --decode > gitcrypt.key
           git-crypt unlock gitcrypt.key
@@ -31,7 +42,22 @@ jobs:
       - name: Install clang
         if: matrix.compiler == 'clang++'
         run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Setup MSVC
+        if: matrix.compiler == 'cl'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Compile all solutions (MSVC)
+        if: matrix.compiler == 'cl'
+        run: |
+          set -e
+          for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
+            dir=$(dirname "$cpp")
+            base=$(basename "$cpp" .cpp)
+            out_dir="build/${{ matrix.compiler }}/$dir"
+            mkdir -p "$out_dir"
+            cl /EHsc /std:c++latest /O2 "$cpp" /Fe"$out_dir/$base.exe"
+          done
       - name: Compile all solutions
+        if: matrix.compiler != 'cl'
         run: |
           set -e
           for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
@@ -42,6 +68,7 @@ jobs:
             ${{ matrix.compiler }} -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
           done
       - name: Run all solutions
+        if: runner.os != 'Windows'
         run: |
           set -e
           for day in $(seq -w 1 25); do

@@ -8,3 +8,5 @@ Each day has its own directory under `2024/` containing `a.cpp`, `b.cpp` and a `
 
 An overview of the line counts for all solutions is published on [GitHub Pages](https://miracoli.github.io/Advent-of-Code/).
 
+The automated build runs on GitHub Actions using GCC, Clang and MSVC.
+
