@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <unordered_map>
 
 using namespace std;
 
@@ -15,7 +16,7 @@ int main() {
   vector<string> grid;
   pair<int, int> pos;
     
-  for (string line; getline(input, line); grid.emplace_back(move(line))) {
+  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
     for (int col = 0; col < line.size(); ++col) {
       if (line[col] == 'S') {
         pos = {grid.size() , col};
@@ -24,10 +25,13 @@ int main() {
   }
     
   vector<pair<int, int>> path;
-  int direction = 0;
-    
+  vector<int> locIndex(grid.size() * grid[0].size(), -1);
+  int direction = 0, idx = 0;
+  auto encode = [&](pair<int, int> pos) { return pos.first * grid[0].size() + pos.second; };
+
   while (grid[pos.first][pos.second] != 'E') {
-    path.push_back(pos);
+    path.emplace_back(pos);
+    locIndex[ encode(pos) ] = idx++;
         
     for (int d : {direction, (direction + 1) & 3, (direction + 3) & 3}) {
       int nx = pos.first + directions[d][0];
@@ -39,21 +43,31 @@ int main() {
       }
     }
   }
-  path.push_back(pos); // add end
-    
-  int validCheats = 0;
-  for (auto i = 0; i < path.size(); ++i) {
-    for (auto j = path.size() - 1; j > i + 1; --j) {
-      if (j - i < savingsWanted) {
-        break;
-      }
-      int cheatDistance = abs(path[i].first - path[j].first) + abs(path[i].second - path[j].second);
-      int cheatSavings = (j - i) - cheatDistance;
-      if (cheatDistance <= maximumCheatDistance && cheatSavings >= savingsWanted) {
-        ++validCheats;
+  path.emplace_back(pos); // add end
+  locIndex[ encode(pos) ] = idx;
+
+  long long validCheats = 0;
+  for (int i = 0; i < (int)path.size(); ++i) {
+    auto [x, y] = path[i];
+    for (int dx = -maximumCheatDistance; dx <= maximumCheatDistance; ++dx) {
+      for (int dy = -maximumCheatDistance; dy <= maximumCheatDistance; ++dy) {
+        int D = abs(dx) + abs(dy);
+        if (D > maximumCheatDistance) {
+          continue;
+        }
+
+        int nx = x + dx, ny = y + dy;
+        if (nx < 0 || nx >= grid.size() || ny < 0 || ny >= grid[0].size()) {
+          continue;
+        }
+
+        int key = nx * grid[0].size() + ny;
+        if (locIndex[key] >= i + savingsWanted + D) {
+          ++validCheats;
+        }
       }
     }
   }
-  
+
   cout << validCheats << endl;
 }

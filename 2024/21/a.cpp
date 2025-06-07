@@ -52,7 +52,7 @@ uint64_t solve(string path, char depth = 0) {
 int main() {
   ifstream fin("input.txt");
   vector<pair<string, int>> input;
-  for (string line; getline(fin, line); input.emplace_back(move(line), stoi(line)));
+  for (string line; getline(fin, line); input.emplace_back(std::move(line), stoi(line)));
 
   cout << transform_reduce(input.begin(), input.end(), 0ULL, plus<>(), [](const auto& p) { return solve(p.first) * p.second; }) << endl;
 }

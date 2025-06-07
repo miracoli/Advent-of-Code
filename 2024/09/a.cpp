@@ -15,7 +15,8 @@ int main() {
   for (int freeIdx = 0, usedIdx = disk.size() - 1; freeIdx <= usedIdx; --usedIdx) {
     if(disk[usedIdx] != -1) {
       while (disk[freeIdx] != -1 && freeIdx <= usedIdx) {
-        checksum += freeIdx * disk[freeIdx++];
+        checksum += freeIdx * disk[freeIdx];
+        ++freeIdx;
       }
 
       if (freeIdx < usedIdx) {
