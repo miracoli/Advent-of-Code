@@ -38,7 +38,7 @@ int main() {
   ifstream input("input.txt");
   if (!input) return cerr << "Error: input.txt not found\n", 1;
 
-  for (string line; getline(input, line) && !line.empty(); grid.emplace_back(move(line))) {
+  for (string line; getline(input, line) && !line.empty(); grid.emplace_back(sdt::move(line))) {
     for (size_t x = 0; x < line.size(); x += 2) {
       line.replace(x, 1, (line[x] == 'O') ? (gpsSum += 100 * grid.size() + x, "[]") : (line[x] == '@') ? (robot = {x, (int)grid.size()}, "@.") : string(2, line[x]));
     }
