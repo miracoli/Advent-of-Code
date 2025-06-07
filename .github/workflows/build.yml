@@ -72,23 +72,8 @@ jobs:
             mkdir -p "$out_dir"
             ${{ matrix.compiler }} -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
           done
-      - name: Run all solutions with hyperfine
-        if: runner.os != 'Windows' && matrix.compiler == 'g++'
-        run: |
-          set -e
-          for day in $(seq -w 1 25); do
-            dir="2024/$day"
-            if [ -f "$dir/a.cpp" ]; then
-              echo "Running $dir/a with hyperfine"
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/a)
-            fi
-            if [ -f "$dir/b.cpp" ]; then
-              echo "Running $dir/b with hyperfine"
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ../../build/${{ matrix.compiler }}/$dir/b)
-            fi
-          done
       - name: Run all solutions
-        if: runner.os != 'Windows' && matrix.compiler != 'g++'
+        if: runner.os != 'Windows'
         run: |
           set -e
           for day in $(seq -w 1 25); do
