@@ -16,12 +16,13 @@ int main() {
   }
 
   unordered_map<uint64_t, uint64_t> stones;
-  int blinks = 25;
+  uint_fast8_t blinks = 25;
 
-  for (int num; inputFile >> num; stones[num]++);
+  for (int num; inputFile >> num; ++stones[num]);
 
+  unordered_map<uint64_t, uint64_t> next;
   while (blinks--) {
-    unordered_map<uint64_t, uint64_t> next;
+    next.clear();
 
     for (const auto& [stone, count] : stones) {
       if (stone == 0) {
@@ -36,8 +37,8 @@ int main() {
       }
     }
 
-    stones = move(next);
+    stones = std::move(next);
   }
 
-  cout << accumulate(stones.begin(), stones.end(), 0LL, [](long long sum, const auto& p) { return sum + p.second; })<< endl;
+  cout << accumulate(stones.begin(), stones.end(), 0LL, [](long long sum, const auto& p) { return sum + p.second; }) << endl;
 }
