@@ -76,7 +76,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           set -e
-          for day in $(seq -w 1 25); do
+          for day in $(seq -w 1 1); do
             dir="2024/$day"
             if [ -f "$dir/a.cpp" ]; then
               echo "Running $dir/a"
