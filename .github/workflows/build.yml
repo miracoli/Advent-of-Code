@@ -87,3 +87,8 @@ jobs:
               (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b)
             fi
           done
+      - name: Test outputs
+        if: runner.os != 'Windows'
+        env:
+          COMPILER: ${{ matrix.compiler }}
+        run: ./tests/run_solutions.sh
