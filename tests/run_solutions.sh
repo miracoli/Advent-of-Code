@@ -3,10 +3,17 @@ set -euo pipefail
 
 compiler="${COMPILER:-g++}"
 
-for day in $(seq -w 1 1); do
+for day in $(seq -w 1 25); do
     dir="2024/$day"
     solution="$dir/solution.txt"
-    [ -f "$solution" ] || continue
+    if [ -f "$dir/a.cpp" ] || [ -f "$dir/b.cpp" ]; then
+        if [ ! -f "$solution" ]; then
+            echo "Missing solution file for $dir" >&2
+            exit 1
+        fi
+    else
+        continue
+    fi
 
     if [ -f "$dir/a.cpp" ]; then
         expected=$(sed -n '1p' "$solution")
