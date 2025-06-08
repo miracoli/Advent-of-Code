@@ -80,11 +80,11 @@ jobs:
             dir="2024/$day"
             if [ -f "$dir/a.cpp" ]; then
               echo "Running $dir/a"
-              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/a)
+              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/a > /dev/null)
             fi
             if [ -f "$dir/b.cpp" ]; then
               echo "Running $dir/b"
-              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b)
+              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b > /dev/null)
             fi
           done
       - name: Test outputs
