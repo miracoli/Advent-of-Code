@@ -43,7 +43,7 @@ jobs:
           mkdir -p site
           echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>' > site/index.html
           echo '<table border="1">' >> site/index.html
-          echo '<tr><th>Day</th><th>a.cpp lines</th><th>b.cpp lines</th><th>a time (µs)</th><th>b time (µs)</th></tr>' >> site/index.html
+          echo '<tr><th>Day</th><th>a.cpp lines</th><th>b.cpp lines</th><th>a time (ms)</th><th>b time (ms)</th></tr>' >> site/index.html
           a_sum=0
           b_sum=0
           for day in $(seq -w 1 25); do
