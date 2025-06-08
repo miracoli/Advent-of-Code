@@ -1,20 +1,31 @@
-#include <iostream>
 #include <fstream>
-#include <cstdint>
+#include <iostream>
 
 int main() {
-  constexpr uint64_t MOD_MASK = (1 << 24) - 1;
-
   std::ifstream in("input.txt");
-  uint64_t secret, sum = 0;
+  uint_fast64_t sum = 0;
+  uint_fast32_t secret;
+
+  const auto jump_2000 = [](uint_fast32_t n) {
+    uint_fast32_t acc  = 0;
+    uint_fast32_t mask = 0x00F33FA2u; // see README.MD how this is computed
+    for (uint_fast8_t b = 0; b < 24; ++b) {
+      if (mask & 1u) {
+        acc ^= n;
+      }
+
+      n ^= (n << 6)  & ((1u << 24) - 1u);
+      n ^=  (n >> 5);
+      n ^= (n << 11) & ((1u << 24) - 1u);
+      n &=  ((1u << 24) - 1u);
+
+      mask >>= 1u;
+    }
+    return acc;
+  };
 
   while (in >> secret) {
-    for (uint_fast16_t i = 0; i < 2000; ++i) {
-      secret = (secret ^ (secret << 6)) & MOD_MASK;
-      secret = (secret ^ (secret >> 5));
-      secret = (secret ^ (secret << 11)) & MOD_MASK;
-    }
-    sum += secret;
+    sum += jump_2000(secret);
   }
 
   std::cout << sum << std::endl;
