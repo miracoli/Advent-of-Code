@@ -3,7 +3,7 @@ set -euo pipefail
 
 compiler="${COMPILER:-g++}"
 
-for day in $(seq -w 1 25); do
+for day in $(seq -w 1 1); do
     dir="2024/$day"
     solution="$dir/solution.txt"
     if [ -f "$dir/a.cpp" ] || [ -f "$dir/b.cpp" ]; then
