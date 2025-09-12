@@ -2,8 +2,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <set>
-#include <tuple>
 using namespace std;
 
 int main() {
@@ -13,47 +11,71 @@ int main() {
   vector<string> map;
   int startX = 0, startY = 0;
 
-  for (string line; getline(inputFile, line); map.push_back(line)) {
+  for (string line; getline(inputFile, line); map.emplace_back(std::move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
-      startX = pos, startY = map.size();
+      startX = (int)pos; startY = (int)map.size();
     }
   }
 
-  constexpr int directionOffsets[] = { 0, 1, 0, -1 };
-  int x = startX, y = startY, direction = 0, endlessLoopCount = 0;
-  set<pair<int, int>> visited{ {x, y} };
+  const int H = (int)map.size(), W = (int)map[0].size();
+  constexpr int_fast8_t dOff[2][4] = { {-1,0,1,0}, {0,1,0,-1} }; // [dy][dir], [dx][dir]
+  auto id = [&](int x, int y){ return y * W + x; };
+
+  vector<bool> seen(W * H, 0);
+  vector<tuple<int, int, uint_fast8_t>> candidates;
+
+  int x = startX, y = startY;
+  uint_fast8_t direction = 0;
+  seen[id(x,y)] = 1;
+
   while (true) {
-    int nx = x + directionOffsets[direction], ny = y + directionOffsets[(direction + 3) & 3];
-    if (ny < 0 || ny >= map.size() || nx < 0 || nx >= map[0].size()) {
+    int nx = x + dOff[1][direction], ny = y + dOff[0][direction];
+    if (ny < 0 || ny >= H || nx < 0 || nx >= W) {
       break;
     } else if (map[ny][nx] == '#') {
       direction = (direction + 1) & 3;
     } else {
-      visited.insert({ x = nx, y = ny });
+      x = nx; y = ny;
+      int cid = id(x,y);
+      if (!seen[cid]) {
+        seen[cid] = 1;
+        candidates.push_back({x, y, direction});
+      }
     }
   }
 
-  for (auto [px, py] : visited) {
-    map[py][px] = '#'; // Place obstacle
+  vector<int> stateStamp(W * H * 4, -1);
+  int stamp = 0;
+  auto state_key = [&](int x, int y, int d){ return ((id(x,y) << 2) | d); };
 
-    set<tuple<int, int, int>> states; // Track position and direction
-    x = startX, y = startY, direction = 0;
+  int endlessLoopCount = 0;
 
+  for (auto cell : candidates) {
+    auto px = std::get<0>(cell), py = std::get<1>(cell);
+    direction = std::get<2>(cell);
+
+    // Start from predecessor of the obstacle cell
+    x = px - dOff[1][direction];
+    y = py - dOff[0][direction];
+
+    ++stamp;
     while (true) {
-      int nx = x + directionOffsets[direction], ny = y + directionOffsets[(direction + 3) & 3];
-      if (ny < 0 || ny >= map.size() || nx < 0 || nx >= map[0].size()) { 
-        break;
-      } else if (map[ny][nx] == '#') {
-        direction = (direction + 1) & 3; // Turn right
-        if (!states.insert({ x, y, direction }).second) {
-          ++endlessLoopCount; // Endless loop detected
+      int nx = x + dOff[1][direction], ny = y + dOff[0][direction];
+      if (ny < 0 || ny >= H || nx < 0 || nx >= W) {
+         break;
+      }
+      if ((map[ny][nx] == '#') || (nx == px && ny == py)) { // blocked
+        direction = (direction + 1) & 3;
+        int key = state_key(x, y, direction);
+        if (stateStamp[key] == stamp) {
+          ++endlessLoopCount;
           break;
         }
+        stateStamp[key] = stamp;
       } else {
-        x = nx, y = ny;
+        x = nx; y = ny;
       }
     }
-    map[py][px] = '.'; // Remove obstacle
   }
 
   cout << endlessLoopCount << endl;
