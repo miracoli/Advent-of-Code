@@ -23,7 +23,7 @@ int main() {
       }
     }
   }
-    
+
   vector<pair<int, int>> path;
   vector<int> locIndex(grid.size() * grid[0].size(), -1);
   int direction = 0, idx = 0;
