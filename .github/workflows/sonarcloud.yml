@@ -7,10 +7,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  analyze:
-    if: ${{ secrets.SONAR_TOKEN != '' }}
-    name: SonarCloud
+  secret-check:
     runs-on: ubuntu-latest
+    outputs:
+      has-token: ${{ steps.detect.outputs.has-token }}
+    steps:
+      - id: detect
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -n "$SONAR_TOKEN" ]; then
+            echo "has-token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-token=false" >> "$GITHUB_OUTPUT"
+          fi
+  analyze:
+    needs: secret-check
+    if: ${{ needs.secret-check.outputs.has-token == 'true' }}
+    name: SonarCloud
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: read
@@ -23,7 +38,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y g++-14
-
+      
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
@@ -49,14 +64,20 @@ jobs:
         run: |
           mkdir -p build
           ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output bash -c '
-            set -e
-            for cpp in $(find 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \)); do
+            set -euo pipefail
+            cxx=$(command -v g++-14 || command -v g++)
+            if [[ -z "$cxx" ]]; then
+              echo "No suitable g++ compiler found" >&2
+              exit 1
+            fi
+            "$cxx" --version
+            while IFS= read -r cpp; do
               dir=$(dirname "$cpp")
               base=$(basename "$cpp" .cpp)
               out_dir="build/$dir"
               mkdir -p "$out_dir"
-              g++-14 -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
-            done
+              "$cxx" -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
+            done < <(find 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \))
           '
 
       - name: SonarCloud Scan
@@ -73,7 +94,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
   skip-notice:
-    if: ${{ secrets.SONAR_TOKEN == '' }}
+    needs: secret-check
+    if: ${{ needs.secret-check.outputs.has-token != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice title=SonarCloud::Analysis skipped because the SONAR_TOKEN secret is not configured."
