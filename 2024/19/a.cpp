@@ -12,7 +12,7 @@ bool canFormDesign(std::string_view design) {
   if (design.empty()) {
     return true;
   }
-  if (memo.count(design)) {
+  if (memo.contains(design)) {
     return memo[design];
   }
   for (const auto &pattern : patterns) {
