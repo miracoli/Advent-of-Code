@@ -1,0 +1,80 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    if: ${{ secrets.SONAR_TOKEN != '' }}
+    name: SonarCloud
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarCloud build-wrapper
+        id: build-wrapper-cache
+        uses: actions/cache@v4
+        with:
+          path: build-wrapper-linux-x86
+          key: ${{ runner.os }}-build-wrapper
+          restore-keys: ${{ runner.os }}-build-wrapper
+
+      - name: Download build-wrapper
+        if: steps.build-wrapper-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -sSLo build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip -q build-wrapper-linux-x86.zip
+
+      - name: Build with build-wrapper
+        run: |
+          mkdir -p build
+          ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output bash -c '
+            set -euo pipefail
+            cxx=$(command -v g++-14 || command -v g++)
+            if [[ -z "$cxx" ]]; then
+              echo "No suitable g++ compiler found" >&2
+              exit 1
+            fi
+            "$cxx" --version
+            while IFS= read -r cpp; do
+              dir=$(dirname "$cpp")
+              base=$(basename "$cpp" .cpp)
+              out_dir="build/$dir"
+              mkdir -p "$out_dir"
+              "$cxx" -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
+            done < <(find 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \))
+          '
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SonarCloud Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+  skip-notice:
+    if: ${{ secrets.SONAR_TOKEN == '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::notice title=SonarCloud::Analysis skipped because the SONAR_TOKEN secret is not configured."
