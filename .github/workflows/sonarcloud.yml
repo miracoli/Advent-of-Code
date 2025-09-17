@@ -21,7 +21,6 @@ jobs:
           else
             echo "has-token=false" >> "$GITHUB_OUTPUT"
           fi
-
   analyze:
     needs: secret-check
     if: ${{ needs.secret-check.outputs.has-token == 'true' }}
@@ -35,6 +34,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install g++-14
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-14
+      
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
