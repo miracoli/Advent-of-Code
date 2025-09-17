@@ -13,7 +13,7 @@ uint64_t countWays(std::string_view design) {
   if (design.empty()) {
     return 1;
   }
-  if (memo.count(design)) {
+  if (memo.contains(design)) {
     return memo[design];
   }
 
