@@ -8,8 +8,12 @@ on:
 
 jobs:
   analyze:
+    if: ${{ secrets.SONAR_TOKEN != '' }}
     name: SonarCloud
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +25,7 @@ jobs:
           sudo apt-get install -y g++-14
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -29,7 +33,7 @@ jobs:
 
       - name: Cache SonarCloud build-wrapper
         id: build-wrapper-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: build-wrapper-linux-x86
           key: ${{ runner.os }}-build-wrapper
@@ -56,14 +60,20 @@ jobs:
           '
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarCloud Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@master
+        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
+  skip-notice:
+    if: ${{ secrets.SONAR_TOKEN == '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::notice title=SonarCloud::Analysis skipped because the SONAR_TOKEN secret is not configured."
