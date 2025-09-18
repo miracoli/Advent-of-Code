@@ -26,7 +26,7 @@ int main() {
 
     for (string line; getline(in, line); ) {
         stringstream ss(line);
-        uint64_t target, num;
+        uint64_t target;
         char colon;
         ss >> target >> colon;
         vector<uint64_t> nums{istream_iterator<uint64_t>{ss}, {}};
