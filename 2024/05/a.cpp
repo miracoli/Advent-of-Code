@@ -17,7 +17,7 @@ int main() {
 
   unordered_map<int, unordered_set<int>> rules;
 
-  for (string line; getline(inputFile, line) && line.find('|') != string::npos;) {
+  for (string line; getline(inputFile, line) && line.contains('|');) {
     int from, to; 
     char delim; 
     stringstream(line) >> from >> delim >> to;
@@ -32,7 +32,7 @@ int main() {
 
     middleSum += [&rules, &ss, &seq, &pos]() {
       for (int n; ss >> n; ss.ignore(1, ',')) {
-        if (!all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.count(to); })) {
+        if (!all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.contains(to); })) {
           return 0;
         }
         seq.push_back(n);
