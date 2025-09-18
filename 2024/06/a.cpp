@@ -7,7 +7,10 @@ using namespace std;
 
 int main() {
   ifstream inputFile("input.txt");
-  if (!inputFile) return cerr << "Error opening file.\n", 1;
+  if (!inputFile) {
+    cerr << "Error opening file.\n";
+    return 1;
+  }
 
   vector<string> map;
   int direction = 0, x = 0, y = 0;

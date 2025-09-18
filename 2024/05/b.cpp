@@ -10,7 +10,8 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    return cerr << "Error opening file.\n", 1;
+    cerr << "Error opening file.\n";
+    return 1;
   }
 
   unordered_map<int, unordered_set<int>> rules;
