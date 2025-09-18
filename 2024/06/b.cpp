@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <array>
 using namespace std;
 
 int main() {
@@ -18,7 +19,7 @@ int main() {
   }
 
   const int H = (int)map.size(), W = (int)map[0].size();
-  constexpr int_fast8_t dOff[2][4] = { {-1,0,1,0}, {0,1,0,-1} }; // [dy][dir], [dx][dir]
+  constexpr std::array<std::array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
   auto id = [&](int x, int y){ return y * W + x; };
 
   vector<bool> seen(W * H, 0);

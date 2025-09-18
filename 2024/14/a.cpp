@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <array>
 
 int main() {
   constexpr int width = 101;
@@ -12,7 +13,7 @@ int main() {
     std::cerr << "Error: Could not open input.txt" << std::endl;
     return 1;
   }
-  int quadrants[4] = {};
+  std::array<int, 4> quadrants{};
   int px, py, vx, vy;
   for (std::string line; std::getline(inputFile, line); ) {
     std::sscanf(line.c_str(), "p=%d,%d v=%d,%d", &px, &py, &vx, &vy);

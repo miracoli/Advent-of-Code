@@ -3,19 +3,20 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <array>
 
 using namespace std;
 
 constexpr int N = 71;
-constexpr int dx[4] = { 1,  0, -1,  0 };
-constexpr int dy[4] = { 0,  1,  0, -1 };
+constexpr std::array<int, 4> dx{1, 0, -1, 0};
+constexpr std::array<int, 4> dy{0, 1, 0, -1};
 
-bool blocked[N][N] = {};
-int  visitStamp[N][N] = {};
+std::array<std::array<bool, N>, N> blocked{};
+std::array<std::array<int, N>, N>  visitStamp{};
 int  bfsRun = 1;
-int  parentX[N][N], parentY[N][N];
+std::array<std::array<int, N>, N>  parentX{}, parentY{};
 unordered_set<int> pathCells;
-int qx[N * N], qy[N * N];
+std::array<int, N * N> qx{}, qy{};
 
 bool bfs() {
   int head = 0, tail = 0;

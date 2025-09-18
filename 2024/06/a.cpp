@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <array>
 using namespace std;
 
 int main() {
@@ -19,7 +20,7 @@ int main() {
   }
 
   set<pair<int, int>> visited{ {x, y} };
-  constexpr int directionOffsets[] = { 0, 1, 0, -1 };
+  constexpr std::array<int, 4> directionOffsets{0, 1, 0, -1};
 
   while (true) {
     int nx = x + directionOffsets[direction], ny = y + directionOffsets[(direction + 3) & 3];

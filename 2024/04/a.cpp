@@ -3,10 +3,11 @@
 #include <vector>
 #include <string>
 #include <iterator>
+#include <array>
 using namespace std;
 
 constexpr string TARGET = "XMAS";
-constexpr int directions[8][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
+constexpr std::array<std::array<int, 2>, 8> directions{{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}}};
 
 int main() {
   ifstream inputFile("input.txt");
