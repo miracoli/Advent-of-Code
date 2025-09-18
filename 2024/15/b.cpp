@@ -13,7 +13,7 @@ pair<int, int> robot;
 int gpsSum = 0;
 
 bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simulate = false) {
-    auto move = [&](const pair<int, int>& p) {
+    auto move = [&delta, &simulate, &box](const pair<int, int>& p) {
         if (grid[p.second][p.first] == '.' || (grid[p.second][p.first] == '[' || grid[p.second][p.first] == ']') && moveBox(p, delta, simulate)) {
             if (!simulate) {
                 swap(grid[p.second][p.first], grid[box.second][delta.second ? p.first : box.first]);
@@ -36,7 +36,10 @@ bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simula
 
 int main() {
   ifstream input("input.txt");
-  if (!input) return cerr << "Error: input.txt not found\n", 1;
+  if (!input) {
+    cerr << "Error: input.txt not found\n";
+    return 1;
+  }
 
   for (string line; getline(input, line) && !line.empty(); grid.emplace_back(std::move(line))) {
     for (size_t x = 0; x < line.size(); x += 2) {

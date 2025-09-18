@@ -6,7 +6,10 @@
 
 int main() {
   std::ifstream inputFile("input.txt");
-  if (!inputFile) return std::cerr << "Error: Could not open input file.\n", 1;
+  if (!inputFile) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
 
   std::vector<int> list1, list2;
   for (int num1, num2; inputFile >> num1 >> num2; list1.push_back(num1), list2.push_back(num2));

@@ -6,7 +6,10 @@
 
 int main() {
   std::ifstream file("input.txt");
-  if (!file) return std::cerr << "Error: Could not open input file.\n", 1;
+  if (!file) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
 
   std::vector<int> list1;
   std::unordered_map<int, int> freq;

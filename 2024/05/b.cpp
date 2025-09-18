@@ -10,7 +10,8 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    return cerr << "Error opening file.\n", 1;
+    cerr << "Error opening file.\n";
+    return 1;
   }
 
   unordered_map<int, unordered_set<int>> rules;
@@ -30,14 +31,14 @@ int main() {
     bool isInvalid = false;
 
     for (int n; ss >> n; ss.ignore(1, ',')) {
-      if (!isInvalid && !all_of(rules[n].begin(), rules[n].end(), [&](int to) { return !pos.count(to); })) {
+      if (!isInvalid && !all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.count(to); })) {
         isInvalid = true;
       }
       seq.push_back(n);
       pos.insert(n);
     }
     if(isInvalid) {
-      stable_sort(seq.begin(), seq.end(), [&](int a, int b) { return rules[a].count(b); });
+      stable_sort(seq.begin(), seq.end(), [&rules](int a, int b) { return rules[a].count(b); });
       middleSum += seq[seq.size() / 2];
     }
   };

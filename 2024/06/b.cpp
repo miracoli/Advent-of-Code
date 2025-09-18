@@ -7,7 +7,10 @@ using namespace std;
 
 int main() {
   ifstream inputFile("input.txt");
-  if (!inputFile) return cerr << "Error opening file.\n", 1;
+  if (!inputFile) {
+    cerr << "Error opening file.\n";
+    return 1;
+  }
 
   vector<string> map;
   int startX = 0, startY = 0;
@@ -20,7 +23,7 @@ int main() {
 
   const int H = (int)map.size(), W = (int)map[0].size();
   constexpr std::array<std::array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
-  auto id = [&](int x, int y){ return y * W + x; };
+  auto id = [W](int x, int y){ return y * W + x; };
 
   vector<bool> seen(W * H, 0);
   vector<tuple<int, int, uint_fast8_t>> candidates;
@@ -47,7 +50,7 @@ int main() {
 
   vector<int> stateStamp(W * H * 4, -1);
   int stamp = 0;
-  auto state_key = [&](int x, int y, int d){ return ((id(x,y) << 2) | d); };
+  auto state_key = [&id](int x, int y, int d){ return ((id(x,y) << 2) | d); };
 
   int endlessLoopCount = 0;
 

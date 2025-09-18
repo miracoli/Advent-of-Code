@@ -24,7 +24,8 @@ bool moveBox(const pair<int, int>& box, const pair<int, int>& delta) {
 int main() {
   ifstream input("input.txt");
   if (!input) {
-    return cerr << "Error: input.txt not found\n", 1;
+    cerr << "Error: input.txt not found\n";
+    return 1;
   }
   for (string line; getline(input, line) && !line.empty(); grid.emplace_back(std::move(line))) {
     for (int x = 0; x < line.size(); ++x) {

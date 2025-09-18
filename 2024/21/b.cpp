@@ -38,7 +38,7 @@ uint64_t solve(string path, char depth = 0) {
     uint64_t minLen = UINT64_MAX;
     do {
       auto temp = curr;
-      if (all_of(movePath.begin(), movePath.end(), [&](char step) { temp[0] += directions[step][0], temp[1] += directions[step][1]; return temp != avoid; })) {
+      if (all_of(movePath.begin(), movePath.end(), [&temp, &avoid](char step) { temp[0] += directions[step][0], temp[1] += directions[step][1]; return temp != avoid; })) {
         minLen = min(minLen, (depth == limit ? movePath.size() + 1 : solve(movePath + 'a', depth + 1)));
       }
     } while (next_permutation(movePath.begin(), movePath.end()));

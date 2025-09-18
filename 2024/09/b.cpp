@@ -9,7 +9,10 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   string line;
-  if (!getline(inputFile, line)) return cerr << "Error opening/reading file.\n", 1;
+  if (!getline(inputFile, line)) {
+    cerr << "Error opening/reading file.\n";
+    return 1;
+  }
 
   long long checksum = 0, start = 0;
   vector<tuple<long long, int, int>> disk; // start, size, index
