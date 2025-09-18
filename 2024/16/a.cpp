@@ -6,10 +6,11 @@
 #include <string>
 #include <tuple>
 #include <cstdint>
+#include <array>
 
 using namespace std;
 
-constexpr int directions[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+constexpr std::array<std::array<int, 2>, 4> directions{{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
 
 int main() {
   ifstream input("input.txt");

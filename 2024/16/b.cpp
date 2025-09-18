@@ -7,10 +7,11 @@
 #include <string>
 #include <limits>
 #include <cstdint>
+#include <array>
 
 using namespace std;
 
-constexpr int_fast8_t dx[] = {1, 0, -1, 0};
+constexpr std::array<int_fast8_t, 4> dx{1, 0, -1, 0};
 
 int main() {
   ifstream input("input.txt");

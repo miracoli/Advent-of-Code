@@ -3,11 +3,12 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <array>
 
 using namespace std;
 
-constexpr int DIRECTIONS[] = { 0, 1, 0, -1 };
-int dist[71][71];
+constexpr std::array<int, 4> DIRECTIONS{0, 1, 0, -1};
+std::array<std::array<int, 71>, 71> dist{};
 queue<pair<int, int>> positions({{0, 0}});
 
 int main() {
@@ -18,7 +19,7 @@ int main() {
     }
 
     int xCoord, yCoord, maxCount = 0;
-    bool grid[71][71] = {};
+    std::array<std::array<bool, 71>, 71> grid{};
 
     for (string line; getline(inputFile, line) && maxCount < 1024; ++maxCount) {
         replace(line.begin(), line.end(), ',', ' ');
@@ -27,7 +28,9 @@ int main() {
         }
     }
 
-    fill(&dist[0][0], &dist[70][71], -1);
+    for (auto& row : dist) {
+        row.fill(-1);
+    }
     dist[0][0] = 0;
     while (!positions.empty()) {
         auto [xCoord, yCoord] = positions.front(); positions.pop();
