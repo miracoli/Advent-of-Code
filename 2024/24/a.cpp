@@ -25,7 +25,7 @@ int main() {
     auto [input1, input2, op, output] = pendingGates.front();
     pendingGates.pop();
 
-    if (wireValues.count(input1) && wireValues.count(input2)) {
+    if (wireValues.contains(input1) && wireValues.contains(input2)) {
       bool v1 = wireValues[input1], v2 = wireValues[input2];
       wireValues[output] = (op == "AND" ? v1 & v2 : op == "OR" ? v1 | v2 :  v1 ^ v2);
     } else {

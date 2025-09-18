@@ -72,7 +72,7 @@ int main() {
       continue;
     }
 
-    if (pathCells.count(x * N + y)) {
+    if (pathCells.contains(x * N + y)) {
       solvable = bfs();
     }
   }

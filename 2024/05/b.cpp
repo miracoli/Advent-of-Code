@@ -16,7 +16,7 @@ int main() {
 
   unordered_map<int, unordered_set<int>> rules;
 
-  for (string line; getline(inputFile, line) && line.find('|') != string::npos;) {
+  for (string line; getline(inputFile, line) && line.contains('|');) {
     int from, to; 
     char delim; 
     stringstream(line) >> from >> delim >> to;
@@ -31,14 +31,14 @@ int main() {
     bool isInvalid = false;
 
     for (int n; ss >> n; ss.ignore(1, ',')) {
-      if (!isInvalid && !all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.count(to); })) {
+      if (!isInvalid && !all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.contains(to); })) {
         isInvalid = true;
       }
       seq.push_back(n);
       pos.insert(n);
     }
     if(isInvalid) {
-      stable_sort(seq.begin(), seq.end(), [&rules](int a, int b) { return rules[a].count(b); });
+      stable_sort(seq.begin(), seq.end(), [&rules](int a, int b) { return rules[a].contains(b); });
       middleSum += seq[seq.size() / 2];
     }
   };

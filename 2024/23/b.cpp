@@ -26,12 +26,12 @@ void findLargestClique(unordered_set<int>& R, unordered_set<int>& P, unordered_s
     R_new.insert(v);
 
     for (int p : P) {
-      if (connections[v].count(p)) {
+      if (connections[v].contains(p)) {
         P_new.insert(p);
       }
     }
     for (int x : X) {
-      if (connections[v].count(x)) {
+      if (connections[v].contains(x)) {
         X_new.insert(x);
       }
     }

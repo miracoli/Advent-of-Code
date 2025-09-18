@@ -22,7 +22,7 @@ int main() {
   for (const auto& [node, neighbors] : connections) {
     for (const auto& neighbor : neighbors) {
       for (const auto& common : connections[neighbor]) {
-        if (connections[node].count(common) && (node[0] == 't' || neighbor[0] == 't' || common[0] == 't')) {
+        if (connections[node].contains(common) && (node[0] == 't' || neighbor[0] == 't' || common[0] == 't')) {
           ++count;
         }
       }
