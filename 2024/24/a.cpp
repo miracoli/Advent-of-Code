@@ -9,7 +9,10 @@ using namespace std;
 
 int main() {
   ifstream inputFile("input.txt");
-  if (!inputFile) return cerr << "Error: Could not open input file.\n", 1;
+  if (!inputFile) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
 
   unordered_map<string, bool> wireValues;
   queue<tuple<string, string, string, string>> pendingGates;

@@ -5,7 +5,10 @@ using namespace std;
 
 int main() {
     ifstream infile("input.txt");
-    if (!infile) return cerr << "Error opening file\n", 1;
+    if (!infile) {
+        cerr << "Error opening file\n";
+        return 1;
+    }
 
     string content((istreambuf_iterator<char>(infile)), istreambuf_iterator<char>());
     regex rx(R"(Button A: X([+-]?\d+), Y([+-]?\d+)\nButton B: X([+-]?\d+), Y([+-]?\d+)\nPrize: X=([+-]?\d+), Y=([+-]?\d+))");
