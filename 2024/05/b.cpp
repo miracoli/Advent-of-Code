@@ -41,7 +41,7 @@ int main() {
       stable_sort(seq.begin(), seq.end(), [&rules](int a, int b) { return rules[a].count(b); });
       middleSum += seq[seq.size() / 2];
     }
-  };
+  }
 
   cout << middleSum << endl;
 }
