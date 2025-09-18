@@ -17,7 +17,7 @@ constexpr uint64_t POW10[] = {
 struct Node { uint64_t stone, count; };
 
 void sort_and_merge(std::vector<Node>& v) {
-  std::sort(v.begin(), v.end(), [](const Node& a, const Node& b) {
+  std::ranges::sort(v, [](const Node& a, const Node& b) {
     return a.stone < b.stone;
   });
   size_t w = 0;
