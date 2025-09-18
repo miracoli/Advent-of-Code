@@ -49,7 +49,7 @@ int main() {
   unordered_map<string,int> id;
   vector<string> name;
 
-  auto getId = [&](const string& s) -> int {
+  auto getId = [&id, &name](const string& s) -> int {
     auto [it, added] = id.emplace(s, (int)id.size());
     if (added) name.push_back(s);
     return it->second;

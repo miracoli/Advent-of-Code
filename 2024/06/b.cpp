@@ -19,7 +19,7 @@ int main() {
 
   const int H = (int)map.size(), W = (int)map[0].size();
   constexpr int_fast8_t dOff[2][4] = { {-1,0,1,0}, {0,1,0,-1} }; // [dy][dir], [dx][dir]
-  auto id = [&](int x, int y){ return y * W + x; };
+  auto id = [W](int x, int y){ return y * W + x; };
 
   vector<bool> seen(W * H, 0);
   vector<tuple<int, int, uint_fast8_t>> candidates;
@@ -46,7 +46,7 @@ int main() {
 
   vector<int> stateStamp(W * H * 4, -1);
   int stamp = 0;
-  auto state_key = [&](int x, int y, int d){ return ((id(x,y) << 2) | d); };
+  auto state_key = [&id](int x, int y, int d){ return ((id(x,y) << 2) | d); };
 
   int endlessLoopCount = 0;
 
