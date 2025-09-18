@@ -29,9 +29,9 @@ int main() {
     vector<int> seq;
     unordered_set<int> pos;
 
-    middleSum += [&]() {
+    middleSum += [&rules, &ss, &seq, &pos]() {
       for (int n; ss >> n; ss.ignore(1, ',')) {
-        if (!all_of(rules[n].begin(), rules[n].end(), [&](int to) { return !pos.count(to); })) {
+        if (!all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.count(to); })) {
           return 0;
         }
         seq.push_back(n);

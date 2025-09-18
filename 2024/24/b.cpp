@@ -36,7 +36,7 @@ int main() {
   ds.resize(as.size());
   cs[1] = bs[0]; // Initialize first carry signal
 
-  auto gateSwap = [&](const std::string in1, const std::string in2) {
+  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const std::string in1, const std::string in2) {
     std::swap(gates[in2], gates[in1]);
     for (auto* vec : {&as, &bs, &cs, &ds}) {
       for (auto& output : *vec) {
@@ -47,7 +47,7 @@ int main() {
     }
   };
 
-  auto findGateOutputs = [&](int i) {
+  auto findGateOutputs = [&gates, &ds, &as, &cs, &bs](int i) {
     for (const auto &[out_gate, gate_gate] : gates) {
       if (ds[i].empty() && std::get<0>(gate_gate) == "AND" && ((as[i - 1] == std::get<1>(gate_gate) && cs[i - 1] == std::get<2>(gate_gate)) || (as[i - 1] == std::get<2>(gate_gate) && cs[i - 1] == std::get<1>(gate_gate)))) {
         ds[i] = out_gate; break;

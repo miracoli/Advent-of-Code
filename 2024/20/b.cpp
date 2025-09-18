@@ -27,7 +27,7 @@ int main() {
   vector<pair<int, int>> path;
   vector<int> locIndex(grid.size() * grid[0].size(), -1);
   int direction = 0, idx = 0;
-  auto encode = [&](pair<int, int> pos) { return pos.first * grid[0].size() + pos.second; };
+  auto encode = [&grid](pair<int, int> pos) { return pos.first * grid[0].size() + pos.second; };
 
   while (grid[pos.first][pos.second] != 'E') {
     path.emplace_back(pos);

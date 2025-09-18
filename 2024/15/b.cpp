@@ -13,7 +13,7 @@ pair<int, int> robot;
 int gpsSum = 0;
 
 bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simulate = false) {
-    auto move = [&](const pair<int, int>& p) {
+    auto move = [&delta, &simulate, &box](const pair<int, int>& p) {
         if (grid[p.second][p.first] == '.' || (grid[p.second][p.first] == '[' || grid[p.second][p.first] == ']') && moveBox(p, delta, simulate)) {
             if (!simulate) {
                 swap(grid[p.second][p.first], grid[box.second][delta.second ? p.first : box.first]);
