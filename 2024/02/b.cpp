@@ -6,8 +6,8 @@
 #include <iterator>
 #include <cmath>
 
-bool isValid(auto&& nums, bool wrongSign, int skip = -1) {
-  auto filtered = nums | std::views::filter([&nums, skip](auto& e) { return skip < 0 || &e != &nums[skip]; });
+bool isValid(const auto& nums, bool wrongSign, int skip = -1) {
+  auto filtered = nums | std::views::filter([&nums, skip](const auto& e) { return skip < 0 || &e != &nums[skip]; });
   auto it = filtered.begin();
   for (auto prev = *it++, index = 1; it != filtered.end(); prev = *it++, ++index) {
     if (auto diff = *it - prev; std::abs(diff) < 1 || std::abs(diff) > 3 || std::signbit(diff) == wrongSign) {
