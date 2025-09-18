@@ -90,7 +90,7 @@ int main() {
     }
   }
 
-  std::sort(wrong.begin(), wrong.end());
+  std::ranges::sort(wrong);
 
   for (auto i = 0; i < wrong.size(); ++i) {
     std::cout << wrong[i] << (i < wrong.size()-1 ? "," : "");

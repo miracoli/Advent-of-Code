@@ -14,8 +14,8 @@ int main() {
   std::vector<int> list1, list2;
   for (int num1, num2; inputFile >> num1 >> num2; list1.push_back(num1), list2.push_back(num2));
 
-  std::sort(list1.begin(), list1.end());
-  std::sort(list2.begin(), list2.end());
+  std::ranges::sort(list1);
+  std::ranges::sort(list2);
 
   std::cout << std::inner_product(list1.begin(), list1.end(), list2.begin(), 0, std::plus<>(), [](int a, int b) { return std::abs(a - b); }) << '\n';
 }
