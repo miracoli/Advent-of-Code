@@ -31,14 +31,14 @@ int main() {
     bool isInvalid = false;
 
     for (int n; ss >> n; ss.ignore(1, ',')) {
-      if (!isInvalid && !all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.contains(to); })) {
+      if (!isInvalid && !std::ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
         isInvalid = true;
       }
       seq.push_back(n);
       pos.insert(n);
     }
     if(isInvalid) {
-      stable_sort(seq.begin(), seq.end(), [&rules](int a, int b) { return rules[a].contains(b); });
+      std::ranges::stable_sort(seq, [&rules](int a, int b) { return rules[a].contains(b); });
       middleSum += seq[seq.size() / 2];
     }
   }

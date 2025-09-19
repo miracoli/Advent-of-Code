@@ -32,7 +32,7 @@ int main() {
 
     middleSum += [&rules, &ss, &seq, &pos]() {
       for (int n; ss >> n; ss.ignore(1, ',')) {
-        if (!all_of(rules[n].begin(), rules[n].end(), [&pos](int to) { return !pos.contains(to); })) {
+        if (!std::ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
           return 0;
         }
         seq.push_back(n);

@@ -11,8 +11,15 @@ int main() {
     return 1;
   }
 
-  std::vector<int> list1, list2;
-  for (int num1, num2; inputFile >> num1 >> num2; list1.push_back(num1), list2.push_back(num2));
+  std::vector<int> list1;
+  std::vector<int> list2;
+
+  int num1;
+  int num2;
+  while (inputFile >> num1 >> num2) {
+    list1.push_back(num1);
+    list2.push_back(num2);
+  }
 
   std::ranges::sort(list1);
   std::ranges::sort(list2);
