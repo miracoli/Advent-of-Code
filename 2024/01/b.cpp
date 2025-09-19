@@ -14,7 +14,12 @@ int main() {
   std::vector<int> list1;
   std::unordered_map<int, int> freq;
 
-  for (int a, b; file >> a >> b; list1.push_back(a), ++freq[b]);
+  int a;
+  int b;
+  while (file >> a >> b) {
+    list1.push_back(a);
+    ++freq[b];
+  }
 
   std::cout << std::accumulate(list1.begin(), list1.end(), 0, [&freq](int sum, int num) { return sum + num * freq[num]; }) << '\n';
 }
