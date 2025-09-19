@@ -50,7 +50,7 @@ int main() {
   vector<string> name;
 
   auto getId = [&id, &name](const string& s) -> int {
-    auto [it, added] = id.emplace(s, (int)id.size());
+    auto [it, added] = id.try_emplace(s, (int)id.size());
     if (added) name.push_back(s);
     return it->second;
   };
