@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdint>
 #include <cstdio>
+#include <algorithm>
 
 int main() {
   const int width = 101;
@@ -26,7 +27,7 @@ int main() {
   std::vector<uint8_t> map(height * width, false);
 
   for (++seconds; ; ++seconds) {
-    std::fill(map.begin(), map.end(), 0);
+    std::ranges::fill(map, 0);
 
     bool collision = false;
     for (auto &robot : robots) {
