@@ -71,38 +71,38 @@ jobs:
             echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
           done
           a_stats=$(python3 - "${a_times[@]}" <<'PY'
-import sys
-import statistics
+          import sys
+          import statistics
 
-values = [float(x) for x in sys.argv[1:]]
-if not values:
-    print("0.00 0.00 0.00 0.00 0.00")
-else:
-    total = sum(values)
-    minimum = min(values)
-    maximum = max(values)
-    average = total / len(values)
-    median = statistics.median(values)
-    print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
-PY
-)
+          values = [float(x) for x in sys.argv[1:]]
+          if not values:
+              print("0.00 0.00 0.00 0.00 0.00")
+          else:
+              total = sum(values)
+              minimum = min(values)
+              maximum = max(values)
+              average = total / len(values)
+              median = statistics.median(values)
+              print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
+          PY
+          )
           read -r a_sum a_min a_max a_avg a_median <<< "$a_stats"
           b_stats=$(python3 - "${b_times[@]}" <<'PY'
-import sys
-import statistics
+          import sys
+          import statistics
 
-values = [float(x) for x in sys.argv[1:]]
-if not values:
-    print("0.00 0.00 0.00 0.00 0.00")
-else:
-    total = sum(values)
-    minimum = min(values)
-    maximum = max(values)
-    average = total / len(values)
-    median = statistics.median(values)
-    print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
-PY
-)
+          values = [float(x) for x in sys.argv[1:]]
+          if not values:
+              print("0.00 0.00 0.00 0.00 0.00")
+          else:
+              total = sum(values)
+              minimum = min(values)
+              maximum = max(values)
+              average = total / len(values)
+              median = statistics.median(values)
+              print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
+          PY
+          )
           read -r b_sum b_min b_max b_avg b_median <<< "$b_stats"
           overall_sum=$(awk "BEGIN {print $a_sum + $b_sum}")
           overall_sum=$(printf "%.2f" "$overall_sum")
