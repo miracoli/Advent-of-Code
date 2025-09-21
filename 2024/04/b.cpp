@@ -7,6 +7,10 @@ using namespace std;
 
 int main() {
   ifstream inputFile("input.txt");
+  if (!inputFile) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<string> grid{istream_iterator<string>(inputFile), {}};
   int count = 0;
 

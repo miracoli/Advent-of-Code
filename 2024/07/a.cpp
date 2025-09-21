@@ -20,6 +20,10 @@ bool isValid(uint64_t target, const vector<uint64_t>& nums, size_t idx) {
 
 int main() {
   ifstream in("input.txt");
+  if (!in) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   uint64_t total = 0;
 
   for (string line; getline(in, line); ) {

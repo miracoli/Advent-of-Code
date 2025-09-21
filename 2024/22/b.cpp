@@ -11,6 +11,10 @@ constexpr size_t STATE_SPACE_SIZE = 19 * 19 * 19 * 19;
 
 int main() {
   std::ifstream inputFile("input.txt");
+  if (!inputFile) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   std::vector<uint_fast32_t> buyerSecrets((std::istream_iterator<uint_fast32_t>(inputFile)), std::istream_iterator<uint_fast32_t>());
   std::array<int_fast16_t, STATE_SPACE_SIZE> sequenceContributions = {0};
   std::array<uint_fast16_t, STATE_SPACE_SIZE> sequenceLastBuyer = {0};

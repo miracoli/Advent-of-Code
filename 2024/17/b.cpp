@@ -67,6 +67,10 @@ std::int64_t rec(const std::vector<std::int64_t>& program, std::size_t instructi
 
 int main() {
   std::ifstream input("input.txt");
+  if (!input) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   std::string line;
   std::string programOutput;
   std::vector<std::string> contents = std::ranges::istream_view<std::string>(input) | std::ranges::to<std::vector<std::string>>();

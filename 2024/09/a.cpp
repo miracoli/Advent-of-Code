@@ -6,6 +6,10 @@ using namespace std;
 
 int main() {
   std::ifstream inputFile("input.txt", std::ios::binary);
+  if (!inputFile) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<int> disk;
   uint64_t idx = 0, id = 0, checksum = 0;
   for (std::istreambuf_iterator<char> it(inputFile), end; it != end; ++it, ++idx) {

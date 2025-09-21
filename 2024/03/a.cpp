@@ -7,6 +7,10 @@
 
 int main() {
   std::ifstream file("input.txt");
+  if (!file) {
+    std::cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   std::string content((std::istreambuf_iterator<char>(file)), {});
   const std::regex r(R"(mul\((\d{1,3}),(\d{1,3})\))");
   uint64_t sum = 0;
