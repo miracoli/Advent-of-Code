@@ -7,6 +7,10 @@ using namespace std;
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   unordered_map<string, unordered_set<string>> connections;
 
   for(string a, b; getline(input, a, '-') && getline(input, b);) {

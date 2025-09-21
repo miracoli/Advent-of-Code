@@ -13,6 +13,10 @@ int comboValue(int operand, int A, int B, int C) {
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   bool first = true;
   std::vector<std::string> contents = std::ranges::istream_view<std::string>(input) | std::ranges::to<std::vector<std::string>>();
   int64_t A = stoi(contents[2]), B = stoi(contents[5]), C = stoi(contents[8]);
