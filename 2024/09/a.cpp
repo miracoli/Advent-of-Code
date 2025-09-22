@@ -5,10 +5,10 @@
 using namespace std;
 
 int main() {
-  std::ifstream inputFile("input.txt", std::ios::binary);
+  ifstream inputFile("input.txt", ios::binary);
   vector<int> disk;
   uint64_t idx = 0, id = 0, checksum = 0;
-  for (std::istreambuf_iterator<char> it(inputFile), end; it != end; ++it, ++idx) {
+  for (istreambuf_iterator<char> it(inputFile), end; it != end; ++it, ++idx) {
     disk.insert(disk.end(), *it - '0', idx & 1 ? -1 : id++);
   }
 

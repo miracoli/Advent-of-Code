@@ -6,8 +6,9 @@
 #include <utility>
 #include <vector>
 #include <array>
+using namespace std;
 
-constexpr std::array<uint64_t, 20> POW10{
+constexpr array<uint64_t, 20> POW10{
   1ULL, 10ULL, 100ULL, 1000ULL, 10000ULL, 100000ULL, 1000000ULL, 10000000ULL,
   100000000ULL, 1000000000ULL, 10000000000ULL, 100000000000ULL,
   1000000000000ULL, 10000000000000ULL, 100000000000000ULL, 1000000000000000ULL,
@@ -17,8 +18,8 @@ constexpr std::array<uint64_t, 20> POW10{
 
 struct Node { uint64_t stone, count; };
 
-void sort_and_merge(std::vector<Node>& v) {
-  std::ranges::sort(v, [](const Node& a, const Node& b) {
+void sort_and_merge(vector<Node>& v) {
+  ranges::sort(v, [](const Node& a, const Node& b) {
     return a.stone < b.stone;
   });
   size_t w = 0;
@@ -34,13 +35,13 @@ void sort_and_merge(std::vector<Node>& v) {
 }
 
 int main() {
-  std::ifstream inputFile("input.txt");
+  ifstream inputFile("input.txt");
   if (!inputFile) {
-    std::cerr << "Error: input.txt not found or inaccessible.\n";
+    cerr << "Error: input.txt not found or inaccessible." << endl;
     return 1;
   }
 
-  std::vector<Node> stones, next;
+  vector<Node> stones, next;
   for (uint64_t num; inputFile >> num; stones.emplace_back(num, 1)); // Read input stones as (stone,1),
 
   uint_fast8_t blinks = 75;
@@ -68,5 +69,5 @@ int main() {
     stones.swap(next);
   }
 
-  std::cout << std::accumulate(stones.begin(), stones.end(), 0ULL, [](uint64_t sum, const auto& e) { return sum + e.count; }) << std::endl;
+  cout << accumulate(stones.begin(), stones.end(), 0ULL, [](uint64_t sum, const auto& e) { return sum + e.count; }) << endl;
 }

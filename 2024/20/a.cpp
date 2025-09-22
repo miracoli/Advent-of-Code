@@ -16,7 +16,7 @@ int main() {
   vector<string> grid;
   pair<int, int> pos;
     
-  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line); grid.emplace_back(move(line))) {
     for (int col = 0; col < line.size(); ++col) {
       if (line[col] == 'S') {
         pos = {grid.size() , col};

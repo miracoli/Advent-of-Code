@@ -4,11 +4,12 @@
 #include <sstream>
 #include <string_view>
 #include <vector>
+using namespace std;
 
-std::unordered_map<std::string_view, bool> memo;
-std::vector<std::string> patterns, designs;
+unordered_map<string_view, bool> memo;
+vector<string> patterns, designs;
 
-bool canFormDesign(std::string_view design) {
+bool canFormDesign(string_view design) {
   if (design.empty()) {
     return true;
   }
@@ -24,22 +25,22 @@ bool canFormDesign(std::string_view design) {
 }
 
 int main() {
-  std::ifstream input("input.txt");
+  ifstream input("input.txt");
   if (!input) {
-    std::cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
-  std::string line;
-  std::getline(input, line);
-  std::stringstream ss(line);
-  for (std::string token; std::getline(ss, token, ',') >> std::ws; ) {
-    patterns.emplace_back(std::move(token));
+  string line;
+  getline(input, line);
+  stringstream ss(line);
+  for (string token; getline(ss, token, ',') >> ws; ) {
+    patterns.emplace_back(move(token));
   }
 
-  while (std::getline(input, line)) {
+  while (getline(input, line)) {
     if (!line.empty()) {
-      designs.emplace_back(std::move(line));
+      designs.emplace_back(move(line));
     }
   }
   
@@ -48,5 +49,5 @@ int main() {
     possible += canFormDesign(designStr);
   }
   
-  std::cout << possible << std::endl;
+  cout << possible << endl;
 }

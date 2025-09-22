@@ -9,7 +9,7 @@ using namespace std;
 int main() {
   ifstream input("input.txt");
   if (!input) {
-    cerr << "Error: input.txt not found or inaccessible.\n";
+    cerr << "Error: input.txt not found or inaccessible." << endl;
     return 1;
   }
   queue<pair<int, int>> q;
@@ -35,7 +35,7 @@ int main() {
         ++totalScore; 
         continue; 
       }
-      for (auto [dx, dy] : { std::pair<int, int>{0, 1}, std::pair<int, int>{0, -1}, std::pair<int, int>{1, 0}, std::pair<int, int>{-1, 0} }) {
+      for (auto [dx, dy] : { pair<int, int>{0, 1}, pair<int, int>{0, -1}, pair<int, int>{1, 0}, pair<int, int>{-1, 0} }) {
         int neighborX = currentX + dx, neighborY = currentY + dy;
         if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && !visited[neighborY][neighborX] && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
           visited[neighborY][neighborX] = true;

@@ -11,7 +11,7 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
@@ -32,7 +32,7 @@ int main() {
 
     middleSum += [&rules, &ss, &seq, &pos]() {
       for (int n; ss >> n; ss.ignore(1, ',')) {
-        if (!std::ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
+        if (!ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
           return 0;
         }
         seq.push_back(n);

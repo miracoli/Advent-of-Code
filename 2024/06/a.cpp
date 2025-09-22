@@ -9,7 +9,7 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
@@ -23,7 +23,7 @@ int main() {
   }
 
   set<pair<int, int>> visited{ {x, y} };
-  constexpr std::array<int, 4> directionOffsets{0, 1, 0, -1};
+  constexpr array<int, 4> directionOffsets{0, 1, 0, -1};
 
   while (true) {
     int nx = x + directionOffsets[direction], ny = y + directionOffsets[(direction + 3) & 3];

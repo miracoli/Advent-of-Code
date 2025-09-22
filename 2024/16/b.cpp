@@ -11,14 +11,14 @@
 
 using namespace std;
 
-constexpr std::array<int_fast8_t, 4> dx{1, 0, -1, 0};
+constexpr array<int_fast8_t, 4> dx{1, 0, -1, 0};
 
 int main() {
   ifstream input("input.txt");
   vector<string> grid;
   pair<uint_fast16_t, uint_fast16_t> start, end;
 
-  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line); grid.emplace_back(move(line))) {
     for (uint_fast8_t col = 0; col < line.size(); ++col) {
       if (line[col] == 'S') {
         start = {grid.size(), col};

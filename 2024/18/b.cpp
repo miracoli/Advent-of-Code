@@ -8,15 +8,15 @@
 using namespace std;
 
 constexpr int N = 71;
-constexpr std::array<int, 4> dx{1, 0, -1, 0};
-constexpr std::array<int, 4> dy{0, 1, 0, -1};
+constexpr array<int, 4> dx{1, 0, -1, 0};
+constexpr array<int, 4> dy{0, 1, 0, -1};
 
-std::array<std::array<bool, N>, N> blocked{};
-std::array<std::array<int, N>, N>  visitStamp{};
+array<array<bool, N>, N> blocked{};
+array<array<int, N>, N>  visitStamp{};
 int  bfsRun = 1;
-std::array<std::array<int, N>, N>  parentX{}, parentY{};
+array<array<int, N>, N>  parentX{}, parentY{};
 unordered_set<int> pathCells;
-std::array<int, N * N> qx{}, qy{};
+array<int, N * N> qx{}, qy{};
 
 bool bfs() {
   int head = 0, tail = 0;
@@ -53,7 +53,7 @@ bool bfs() {
 int main() {
   ifstream input("input.txt");
   if (!input) {
-    cerr << "Error: unable to open input.txt\n";
+    cerr << "Error: unable to open input.txt" << endl;
     return 1;
   }
 

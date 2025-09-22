@@ -10,14 +10,14 @@
 
 using namespace std;
 
-constexpr std::array<std::array<int, 2>, 4> directions{{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
+constexpr array<array<int, 2>, 4> directions{{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
 
 int main() {
   ifstream input("input.txt");
   vector<string> grid;
   pair<uint_fast16_t, uint_fast16_t> start;
 
-  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line); grid.emplace_back(move(line))) {
     if (auto pos = line.find('S'); pos != string::npos) {
       start = {pos, grid.size()};
     }

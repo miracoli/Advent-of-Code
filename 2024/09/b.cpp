@@ -10,7 +10,7 @@ int main() {
   ifstream inputFile("input.txt");
   string line;
   if (!getline(inputFile, line)) {
-    cerr << "Error opening/reading file.\n";
+    cerr << "Error opening/reading file." << endl;
     return 1;
   }
 

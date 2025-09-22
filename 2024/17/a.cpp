@@ -14,9 +14,9 @@ int comboValue(int operand, int A, int B, int C) {
 int main() {
   ifstream input("input.txt");
   bool first = true;
-  std::vector<std::string> contents = std::ranges::istream_view<std::string>(input) | std::ranges::to<std::vector<std::string>>();
+  vector<string> contents = ranges::istream_view<string>(input) | ranges::to<vector<string>>();
   int64_t A = stoi(contents[2]), B = stoi(contents[5]), C = stoi(contents[8]);
-  std::vector<int> program= contents[10] | std::views::split(',') | std::views::transform([](auto&& part) { return part[0] - '0'; }) | std::ranges::to<std::vector<int>>();
+  vector<int> program= contents[10] | views::split(',') | views::transform([](auto&& part) { return part[0] - '0'; }) | ranges::to<vector<int>>();
 
   for (int instructionPointer = 0; instructionPointer < program.size();) {
     int opcode = program[instructionPointer++], operand = program[instructionPointer++];

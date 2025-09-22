@@ -8,21 +8,21 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
   vector<string> map;
   int startX = 0, startY = 0;
 
-  for (string line; getline(inputFile, line); map.emplace_back(std::move(line))) {
+  for (string line; getline(inputFile, line); map.emplace_back(move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
       startX = (int)pos; startY = (int)map.size();
     }
   }
 
   const int H = (int)map.size(), W = (int)map[0].size();
-  constexpr std::array<std::array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
+  constexpr array<array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
   auto id = [W](int x, int y){ return y * W + x; };
 
   vector<bool> seen(W * H, 0);
@@ -55,8 +55,8 @@ int main() {
   int endlessLoopCount = 0;
 
   for (auto cell : candidates) {
-    auto px = std::get<0>(cell), py = std::get<1>(cell);
-    direction = std::get<2>(cell);
+    auto px = get<0>(cell), py = get<1>(cell);
+    direction = get<2>(cell);
 
     // Start from predecessor of the obstacle cell
     x = px - dOff[1][direction];

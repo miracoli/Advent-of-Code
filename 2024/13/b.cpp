@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     ifstream infile("input.txt");
     if (!infile) {
-        cerr << "Error opening file\n";
+        cerr << "Error opening file" << endl;
         return 1;
     }
 
@@ -29,5 +29,5 @@ int main() {
         }
     }
 
-    cout << res << "\n";
+    cout << res << endl;
 }

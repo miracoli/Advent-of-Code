@@ -37,11 +37,11 @@ bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simula
 int main() {
   ifstream input("input.txt");
   if (!input) {
-    cerr << "Error: input.txt not found\n";
+    cerr << "Error: input.txt not found" << endl;
     return 1;
   }
 
-  for (string line; getline(input, line) && !line.empty(); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line) && !line.empty(); grid.emplace_back(move(line))) {
     for (size_t x = 0; x < line.size(); x += 2) {
       line.replace(x, 1, (line[x] == 'O') ? (gpsSum += 100 * grid.size() + x, "[]") : (line[x] == '@') ? (robot = {x, (int)grid.size()}, "@.") : string(2, line[x]));
     }

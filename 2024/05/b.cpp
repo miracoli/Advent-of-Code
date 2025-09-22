@@ -10,7 +10,7 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
@@ -31,14 +31,14 @@ int main() {
     bool isInvalid = false;
 
     for (int n; ss >> n; ss.ignore(1, ',')) {
-      if (!isInvalid && !std::ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
+      if (!isInvalid && !ranges::all_of(rules[n], [&pos](int to) { return !pos.contains(to); })) {
         isInvalid = true;
       }
       seq.push_back(n);
       pos.insert(n);
     }
     if(isInvalid) {
-      std::ranges::stable_sort(seq, [&rules](int a, int b) { return rules[a].contains(b); });
+      ranges::stable_sort(seq, [&rules](int a, int b) { return rules[a].contains(b); });
       middleSum += seq[seq.size() / 2];
     }
   }

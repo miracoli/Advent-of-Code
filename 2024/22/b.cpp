@@ -5,18 +5,19 @@
 #include <iterator>
 #include <algorithm>
 #include <array>
+using namespace std;
 
 constexpr uint_fast32_t MOD_MASK = (1ULL << 24) - 1;
 constexpr size_t STATE_SPACE_SIZE = 19 * 19 * 19 * 19;
 
 int main() {
-  std::ifstream inputFile("input.txt");
-  std::vector<uint_fast32_t> buyerSecrets((std::istream_iterator<uint_fast32_t>(inputFile)), std::istream_iterator<uint_fast32_t>());
-  std::array<int_fast16_t, STATE_SPACE_SIZE> sequenceContributions = {0};
-  std::array<uint_fast16_t, STATE_SPACE_SIZE> sequenceLastBuyer = {0};
+  ifstream inputFile("input.txt");
+  vector<uint_fast32_t> buyerSecrets((istream_iterator<uint_fast32_t>(inputFile)), istream_iterator<uint_fast32_t>());
+  array<int_fast16_t, STATE_SPACE_SIZE> sequenceContributions = {0};
+  array<uint_fast16_t, STATE_SPACE_SIZE> sequenceLastBuyer = {0};
   int_fast16_t maxContributedValue = 0;
   uint_fast16_t currentBuyerId = 0;
-  std::array<int_fast8_t, 2001> priceHistory = {0};
+  array<int_fast8_t, 2001> priceHistory = {0};
 
   for (uint_fast32_t secret : buyerSecrets) {
     ++currentBuyerId;
@@ -38,11 +39,11 @@ int main() {
         if (sequenceLastBuyer[stateIndex] != currentBuyerId) {
            sequenceLastBuyer[stateIndex] = currentBuyerId;
            sequenceContributions[stateIndex] += currentPrice;
-           maxContributedValue = std::max(maxContributedValue, sequenceContributions[stateIndex]);
+           maxContributedValue = max(maxContributedValue, sequenceContributions[stateIndex]);
         }
       }
     }
   }
 
-  std::cout << maxContributedValue << std::endl;
+  cout << maxContributedValue << endl;
 }

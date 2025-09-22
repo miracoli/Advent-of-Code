@@ -3,16 +3,17 @@
 #include <vector>
 #include <unordered_map>
 #include <numeric>
+using namespace std;
 
 int main() {
-  std::ifstream file("input.txt");
+  ifstream file("input.txt");
   if (!file) {
-    std::cerr << "Error: Could not open input file.\n";
+    cerr << "Error: Could not open input file." << endl;
     return 1;
   }
 
-  std::vector<int> list1;
-  std::unordered_map<int, int> freq;
+  vector<int> list1;
+  unordered_map<int, int> freq;
 
   int a;
   int b;
@@ -21,5 +22,8 @@ int main() {
     ++freq[b];
   }
 
-  std::cout << std::accumulate(list1.begin(), list1.end(), 0, [&freq](int sum, int num) { return sum + num * freq[num]; }) << '\n';
+  cout << accumulate(list1.begin(), list1.end(), 0, [&freq](int sum, int num) {
+           return sum + num * freq[num];
+         })
+       << endl;
 }

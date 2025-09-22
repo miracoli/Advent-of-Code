@@ -7,8 +7,8 @@
 
 using namespace std;
 
-constexpr std::array<int, 4> DIRECTIONS{0, 1, 0, -1};
-std::array<std::array<int, 71>, 71> dist{};
+constexpr array<int, 4> DIRECTIONS{0, 1, 0, -1};
+array<array<int, 71>, 71> dist{};
 queue<pair<int, int>> positions({{0, 0}});
 
 int main() {
@@ -19,7 +19,7 @@ int main() {
     }
 
     int xCoord, yCoord, maxCount = 0;
-    std::array<std::array<bool, 71>, 71> grid{};
+    array<array<bool, 71>, 71> grid{};
 
     for (string line; getline(inputFile, line) && maxCount < 1024; ++maxCount) {
         replace(line.begin(), line.end(), ',', ' ');

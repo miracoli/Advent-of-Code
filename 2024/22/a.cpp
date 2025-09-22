@@ -1,8 +1,9 @@
 #include <fstream>
 #include <iostream>
+using namespace std;
 
 int main() {
-  std::ifstream in("input.txt");
+  ifstream in("input.txt");
   uint_fast64_t sum = 0;
   uint_fast32_t secret;
 
@@ -28,5 +29,5 @@ int main() {
     sum += jump_2000(secret);
   }
 
-  std::cout << sum << std::endl;
+  cout << sum << endl;
 }
