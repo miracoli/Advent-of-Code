@@ -93,5 +93,7 @@ int main() {
 
   ranges::sort(wrong);
 
-  cout << (wrong | std::views::join_with(',')) << endl;
+  for (auto i = 0; i < wrong.size(); ++i) {
+    cout << wrong[i] << (i < wrong.size()-1 ? "," : "");
+  }
 }
