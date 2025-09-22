@@ -1,10 +1,11 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <ranges>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <tuple>
 using namespace std;
 
 int main() {
@@ -93,7 +94,5 @@ int main() {
 
   ranges::sort(wrong);
 
-  for (auto i = 0; i < wrong.size(); ++i) {
-    cout << wrong[i] << (i < wrong.size()-1 ? "," : "");
-  }
+  std::cout << std::ranges::to<std::string>(wrong | std::views::join_with(',')) << std::endl;
 }
