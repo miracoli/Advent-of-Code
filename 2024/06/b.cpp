@@ -15,7 +15,7 @@ int main() {
   vector<string> map;
   int startX = 0, startY = 0;
 
-  for (string line; getline(inputFile, line); map.emplace_back(move(line))) {
+  for (string line; getline(inputFile, line); map.emplace_back(std::move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
       startX = (int)pos; startY = (int)map.size();
     }

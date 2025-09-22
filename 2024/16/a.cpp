@@ -21,7 +21,7 @@ int main() {
   vector<string> grid;
   pair<uint_fast16_t, uint_fast16_t> start;
 
-  for (string line; getline(input, line); grid.emplace_back(move(line))) {
+  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
     if (auto pos = line.find('S'); pos != string::npos) {
       start = {pos, grid.size()};
     }
