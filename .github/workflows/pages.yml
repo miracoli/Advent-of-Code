@@ -42,8 +42,8 @@ jobs:
         run: |
           mkdir -p site
           cat <<'EOF' > site/index.html
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>
-EOF
+          <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>
+          EOF
           mapfile -t years < <(find . -mindepth 1 -maxdepth 1 -type d -regex './[0-9]\{4\}' -printf '%f\n' | sort)
           if [ ${#years[@]} -eq 0 ]; then
             echo '<p>No solution data available.</p>' >> site/index.html
