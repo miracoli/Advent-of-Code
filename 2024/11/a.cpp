@@ -37,7 +37,7 @@ int main() {
       }
     }
 
-    stones = move(next);
+    stones = std::move(next);
   }
 
   cout << accumulate(stones.begin(), stones.end(), 0LL, [](long long sum, const auto& p) { return sum + p.second; }) << endl;
