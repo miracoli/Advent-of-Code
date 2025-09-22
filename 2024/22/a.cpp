@@ -4,6 +4,10 @@ using namespace std;
 
 int main() {
   ifstream in("input.txt");
+  if (!in) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   uint_fast64_t sum = 0;
   uint_fast32_t secret;
 

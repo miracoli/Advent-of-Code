@@ -41,42 +41,92 @@ jobs:
       - name: Generate index.html
         run: |
           mkdir -p site
-          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>' > site/index.html
-          echo '<table border="1">' >> site/index.html
-          echo '<tr><th>Day</th><th>a.cpp lines</th><th>b.cpp lines</th><th>a time (ms)</th><th>b time (ms)</th></tr>' >> site/index.html
-          a_sum=0
-          b_sum=0
-          for day in $(seq -w 1 25); do
-            dir="2024/$day"
-            a_lines=""
-            b_lines=""
-            a_time=""
-            b_time=""
-            if [ -f "$dir/a.cpp" ]; then
-              a_lines=$(wc -l < "$dir/a.cpp" | xargs)
-              (cd "$dir" && g++ -std=c++23 -O2 a.cpp -o a)
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./a --export-json /tmp/a.json > /dev/null)
-              a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
-              a_time=$(printf "%.2f" "$a_time_raw")
-              a_sum=$(awk "BEGIN {print $a_sum + $a_time}")
-            fi
-            if [ -f "$dir/b.cpp" ]; then
-              b_lines=$(wc -l < "$dir/b.cpp" | xargs)
-              (cd "$dir" && g++ -std=c++23 -O2 b.cpp -o b)
-              (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./b --export-json /tmp/b.json > /dev/null)
-              b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
-              b_time=$(printf "%.2f" "$b_time_raw")
-              b_sum=$(awk "BEGIN {print $b_sum + $b_time}")
-            fi
-            echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
+          cat <<'EOF' > site/index.html
+          <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>
+          EOF
+          mapfile -t years < <(find . -mindepth 1 -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]' -printf '%f\n' | sort)
+          if [ ${#years[@]} -eq 0 ]; then
+            echo '<p>No solution data available.</p>' >> site/index.html
+          fi
+          for year in "${years[@]}"; do
+            {
+              echo "<h2>${year}</h2>"
+              echo '<table border="1">'
+              echo '<tr><th>Day</th><th>a.cpp lines</th><th>b.cpp lines</th><th>a time (ms)</th><th>b time (ms)</th></tr>'
+            } >> site/index.html
+            a_times=()
+            b_times=()
+            for day in $(seq -w 1 25); do
+              dir="${year}/$day"
+              a_lines=""
+              b_lines=""
+              a_time=""
+              b_time=""
+              if [ -f "$dir/a.cpp" ]; then
+                a_lines=$(wc -l < "$dir/a.cpp" | xargs)
+                (cd "$dir" && g++ -std=c++23 -O2 a.cpp -o a)
+                (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./a --export-json /tmp/a.json > /dev/null)
+                a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
+                a_time=$(printf "%.2f" "$a_time_raw")
+                a_times+=("$a_time_raw")
+              fi
+              if [ -f "$dir/b.cpp" ]; then
+                b_lines=$(wc -l < "$dir/b.cpp" | xargs)
+                (cd "$dir" && g++ -std=c++23 -O2 b.cpp -o b)
+                (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./b --export-json /tmp/b.json > /dev/null)
+                b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
+                b_time=$(printf "%.2f" "$b_time_raw")
+                b_times+=("$b_time_raw")
+              fi
+              echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
+            done
+            a_stats=$(python3 - "${a_times[@]}" <<'PY'
+          import sys
+          import statistics
+
+          values = [float(x) for x in sys.argv[1:]]
+          if not values:
+              print("0.00 0.00 0.00 0.00 0.00")
+          else:
+              total = sum(values)
+              minimum = min(values)
+              maximum = max(values)
+              average = total / len(values)
+              median = statistics.median(values)
+              print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
+          PY
+            )
+            read -r a_sum a_min a_max a_avg a_median <<< "$a_stats"
+            b_stats=$(python3 - "${b_times[@]}" <<'PY'
+          import sys
+          import statistics
+
+          values = [float(x) for x in sys.argv[1:]]
+          if not values:
+              print("0.00 0.00 0.00 0.00 0.00")
+          else:
+              total = sum(values)
+              minimum = min(values)
+              maximum = max(values)
+              average = total / len(values)
+              median = statistics.median(values)
+              print(f"{total:.2f} {minimum:.2f} {maximum:.2f} {average:.2f} {median:.2f}")
+          PY
+            )
+            read -r b_sum b_min b_max b_avg b_median <<< "$b_stats"
+            overall_sum=$(awk "BEGIN {print $a_sum + $b_sum}")
+            overall_sum=$(printf "%.2f" "$overall_sum")
+            {
+              echo "<tr><td>Min</td><td></td><td></td><td>${a_min}</td><td>${b_min}</td></tr>"
+              echo "<tr><td>Max</td><td></td><td></td><td>${a_max}</td><td>${b_max}</td></tr>"
+              echo "<tr><td>Average</td><td></td><td></td><td>${a_avg}</td><td>${b_avg}</td></tr>"
+              echo "<tr><td>Median</td><td></td><td></td><td>${a_median}</td><td>${b_median}</td></tr>"
+              echo "<tr><td>Sum</td><td></td><td></td><td>${a_sum}</td><td>${b_sum}</td></tr>"
+              echo "<tr><td>Overall</td><td></td><td></td><td colspan=\"2\">${overall_sum}</td></tr>"
+              echo '</table>'
+            } >> site/index.html
           done
-          a_sum=$(printf "%.2f" "$a_sum")
-          b_sum=$(printf "%.2f" "$b_sum")
-          overall_sum=$(awk "BEGIN {print $a_sum + $b_sum}")
-          overall_sum=$(printf "%.2f" "$overall_sum")
-          echo "<tr><td>Sum</td><td></td><td></td><td>${a_sum}</td><td>${b_sum}</td></tr>" >> site/index.html
-          echo "<tr><td>Overall</td><td></td><td></td><td colspan=\"2\">${overall_sum}</td></tr>" >> site/index.html
-          echo '</table></body></html>' >> site/index.html
+          echo '</body></html>' >> site/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

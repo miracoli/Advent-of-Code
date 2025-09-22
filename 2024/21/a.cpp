@@ -51,6 +51,10 @@ uint64_t solve(string path, char depth = 0) {
 
 int main() {
   ifstream fin("input.txt");
+  if (!fin) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<pair<string, int>> input;
   for (string line; getline(fin, line); input.emplace_back(move(line), stoi(line)));
 

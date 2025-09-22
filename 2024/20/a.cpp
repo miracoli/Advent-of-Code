@@ -13,6 +13,10 @@ constexpr int savingsWanted = 100;
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<string> grid;
   pair<int, int> pos;
     

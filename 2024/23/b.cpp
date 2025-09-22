@@ -45,6 +45,10 @@ void findLargestClique(unordered_set<int>& R, unordered_set<int>& P, unordered_s
 
 int main() {
   ifstream input{"input.txt"};
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
 
   unordered_map<string,int> id;
   vector<string> name;

@@ -12,6 +12,10 @@ constexpr array<array<int, 2>, 4> dirs = {{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<string> grid(istream_iterator<string>(input), {});
   vector<vector<bool>> visited(grid.size(), vector<bool>(grid[0].size()));
   int total = 0;

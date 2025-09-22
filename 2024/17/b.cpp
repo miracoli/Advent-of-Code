@@ -68,6 +68,10 @@ int64_t rec(const vector<int64_t>& program, size_t instructionPointer, int64_t c
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   string line;
   string programOutput;
   vector<string> contents = ranges::istream_view<string>(input) | ranges::to<vector<string>>();

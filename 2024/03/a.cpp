@@ -8,6 +8,10 @@ using namespace std;
 
 int main() {
   ifstream file("input.txt");
+  if (!file) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   string content((istreambuf_iterator<char>(file)), {});
   const regex r(R"(mul\((\d{1,3}),(\d{1,3})\))");
   uint64_t sum = 0;

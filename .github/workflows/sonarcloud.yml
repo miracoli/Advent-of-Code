@@ -77,7 +77,7 @@ jobs:
               out_dir="build/$dir"
               mkdir -p "$out_dir"
               "$cxx" -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
-            done < <(find 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \))
+            done < <(find 2023 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \))
           '
 
       - name: SonarCloud Scan

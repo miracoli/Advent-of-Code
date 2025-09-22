@@ -11,6 +11,10 @@ constexpr array<array<int, 2>, 8> directions{{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, 
 
 int main() {
   ifstream inputFile("input.txt");
+  if (!inputFile) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<string> grid{istream_iterator<string>{inputFile}, istream_iterator<string>{}};
   int rows = grid.size(), cols = grid[0].size(), count = 0;
 

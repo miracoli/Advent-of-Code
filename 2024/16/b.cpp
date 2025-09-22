@@ -15,6 +15,10 @@ constexpr array<int_fast8_t, 4> dx{1, 0, -1, 0};
 
 int main() {
   ifstream input("input.txt");
+  if (!input) {
+    cerr << "Error: Could not open input file.\n";
+    return 1;
+  }
   vector<string> grid;
   pair<uint_fast16_t, uint_fast16_t> start, end;
 
