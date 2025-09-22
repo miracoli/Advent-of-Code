@@ -10,7 +10,7 @@ using namespace std;
 int main() {
   ifstream inputFile("input.txt");
   if (!inputFile) {
-    cerr << "Error: Could not open input file.\n";
+    cerr << "Error: Could not open input file." << endl;
     return 1;
   }
 

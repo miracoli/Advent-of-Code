@@ -6,22 +6,23 @@
 #include <algorithm>
 #include <sstream>
 #include <ranges>
+using namespace std;
 
-std::vector<std::int64_t> instructions;
+vector<int64_t> instructions;
 int64_t A, B, C;
 
-std::int64_t comboValue(std::int64_t operand)  {
+int64_t comboValue(int64_t operand)  {
   return operand < 4 ? operand : operand == 4 ? A : operand == 5 ? B : C;
 }
 
-std::int64_t rec(const std::vector<std::int64_t>& program, std::size_t instructionPointer, std::int64_t current = 0) {
-  for (std::int64_t i = 0; i < 8; ++i) {
-    std::int64_t newCurrent = (current << 3) + i;
-    std::vector<std::int64_t> result;
+int64_t rec(const vector<int64_t>& program, size_t instructionPointer, int64_t current = 0) {
+  for (int64_t i = 0; i < 8; ++i) {
+    int64_t newCurrent = (current << 3) + i;
+    vector<int64_t> result;
         
     A = newCurrent;
     for (int ip = 0; ip < instructions.size();) {
-      std::int64_t opcode = instructions[ip++], operand = instructions[ip++];
+      int64_t opcode = instructions[ip++], operand = instructions[ip++];
       switch (opcode) {
         case 0:  // adv
             A /= (1 << comboValue(operand));
@@ -52,7 +53,7 @@ std::int64_t rec(const std::vector<std::int64_t>& program, std::size_t instructi
       }
     }
 
-    if (std::equal(result.begin(), result.end(), program.begin() + instructionPointer)) {
+    if (equal(result.begin(), result.end(), program.begin() + instructionPointer)) {
       if (instructionPointer == 0) {
         return newCurrent;
       }
@@ -66,16 +67,16 @@ std::int64_t rec(const std::vector<std::int64_t>& program, std::size_t instructi
 }
 
 int main() {
-  std::ifstream input("input.txt");
+  ifstream input("input.txt");
   if (!input) {
-    std::cerr << "Error: Could not open input file.\n";
+    cerr << "Error: Could not open input file.\n";
     return 1;
   }
-  std::string line;
-  std::string programOutput;
-  std::vector<std::string> contents = std::ranges::istream_view<std::string>(input) | std::ranges::to<std::vector<std::string>>();
+  string line;
+  string programOutput;
+  vector<string> contents = ranges::istream_view<string>(input) | ranges::to<vector<string>>();
  
-  instructions = contents[10] | std::views::split(',') | std::views::transform([](auto&& part) { return part[0] - '0'; }) | std::ranges::to<std::vector<int64_t>>();
+  instructions = contents[10] | views::split(',') | views::transform([](auto&& part) { return part[0] - '0'; }) | ranges::to<vector<int64_t>>();
 
-  std::cout << rec(instructions, instructions.size() - 1) << std::endl;
+  cout << rec(instructions, instructions.size() - 1) << endl;
 }

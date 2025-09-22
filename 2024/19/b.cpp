@@ -5,11 +5,12 @@
 #include <sstream>
 #include <string_view>
 #include <cstdint>
+using namespace std;
 
-std::unordered_map<std::string_view, uint64_t> memo;
-std::vector<std::string> patterns, designs;
+unordered_map<string_view, uint64_t> memo;
+vector<string> patterns, designs;
 
-uint64_t countWays(std::string_view design) {
+uint64_t countWays(string_view design) {
   if (design.empty()) {
     return 1;
   }
@@ -27,20 +28,20 @@ uint64_t countWays(std::string_view design) {
 }
 
 int main() {
-  std::ifstream input("input.txt");
+  ifstream input("input.txt");
   if (!input) {
-    std::cerr << "Error opening file.\n";
+    cerr << "Error opening file." << endl;
     return 1;
   }
 
-  std::string line;
-  std::getline(input, line);
-  std::stringstream ss(line);
-  for (std::string token; std::getline(ss, token, ',') >> std::ws; ) {
+  string line;
+  getline(input, line);
+  stringstream ss(line);
+  for (string token; getline(ss, token, ',') >> ws; ) {
     patterns.emplace_back(std::move(token));
   }
 
-  while (std::getline(input, line)) {
+  while (getline(input, line)) {
     if (!line.empty()) {
       designs.emplace_back(std::move(line));
     }
@@ -51,5 +52,5 @@ int main() {
     totalWays += countWays(design);
   }
 
-  std::cout << totalWays << std::endl;
+  cout << totalWays << endl;
 }

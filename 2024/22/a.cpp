@@ -1,10 +1,11 @@
 #include <fstream>
 #include <iostream>
+using namespace std;
 
 int main() {
-  std::ifstream in("input.txt");
+  ifstream in("input.txt");
   if (!in) {
-    std::cerr << "Error: Could not open input file.\n";
+    cerr << "Error: Could not open input file.\n";
     return 1;
   }
   uint_fast64_t sum = 0;
@@ -32,5 +33,5 @@ int main() {
     sum += jump_2000(secret);
   }
 
-  std::cout << sum << std::endl;
+  cout << sum << endl;
 }

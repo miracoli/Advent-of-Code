@@ -13,12 +13,12 @@ pair<int, int> robot;
 int gpsSum = 0;
 
 bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simulate = false) {
-    auto move = [&delta, &simulate, &box](const pair<int, int>& p) {
+    auto attemptMove = [&delta, &simulate, &box](const pair<int, int>& p) {
         if (grid[p.second][p.first] == '.' || (grid[p.second][p.first] == '[' || grid[p.second][p.first] == ']') && moveBox(p, delta, simulate)) {
             if (!simulate) {
                 swap(grid[p.second][p.first], grid[box.second][delta.second ? p.first : box.first]);
                 if(grid[p.second][p.first] == '[') {
-                  gpsSum += 100 * delta.second + delta.first; 
+                  gpsSum += 100 * delta.second + delta.first;
                 }
             }
             return true;
@@ -29,15 +29,15 @@ bool moveBox(const pair<int, int>& box, const pair<int, int>& delta, bool simula
     if (delta.second) { // vertical move
        pair<int, int> newBoxR = {box.first + delta.first + (grid[box.second][box.first] == '['), box.second + delta.second};
        pair<int, int> newBoxL = {box.first + delta.first - (grid[box.second][box.first] != '['), box.second + delta.second};
-       return move(newBoxL) && move(newBoxR);
-    } 
-    return move({box.first + delta.first, box.second + delta.second}); // horizontal move
+       return attemptMove(newBoxL) && attemptMove(newBoxR);
+    }
+    return attemptMove({box.first + delta.first, box.second + delta.second}); // horizontal move
 }
 
 int main() {
   ifstream input("input.txt");
   if (!input) {
-    cerr << "Error: input.txt not found\n";
+    cerr << "Error: input.txt not found" << endl;
     return 1;
   }
 

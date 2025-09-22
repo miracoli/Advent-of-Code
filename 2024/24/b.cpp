@@ -5,21 +5,22 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+using namespace std;
 
 int main() {
-  std::ifstream inf{"input.txt"};
+  ifstream inf{"input.txt"};
   if (!inf) {
-    std::cerr << "Could not open file: input.txt \n";
+    cerr << "Could not open file: input.txt" << endl;
     return 2;
   }
 
-  for (std::string line; std::getline(inf, line) && !line.empty(););
+  for (string line; getline(inf, line) && !line.empty(););
 
-  std::vector<std::string> as, bs, cs, ds, wrong;
-  std::unordered_map<std::string, std::tuple<std::string, std::string, std::string>> gates;
-  for (std::string input1, input2, op, out, _; inf >> input1 >> op >> input2 >> _ >> out; gates[out] = {op, input1, input2}) {
+  vector<string> as, bs, cs, ds, wrong;
+  unordered_map<string, tuple<string, string, string>> gates;
+  for (string input1, input2, op, out, _; inf >> input1 >> op >> input2 >> _ >> out; gates[out] = {op, input1, input2}) {
     if ((input1[0] == 'x' && input2[0] == 'y') || (input1[0] == 'y' && input2[0] == 'x')) {
-      int n1{std::stoi(input1.substr(1))}, n2{std::stoi(input2.substr(1))};
+      int n1{stoi(input1.substr(1))}, n2{stoi(input2.substr(1))};
 
       if (n1 == n2) {
         if (n1 + 1 > as.size()) {
@@ -36,8 +37,8 @@ int main() {
   ds.resize(as.size());
   cs[1] = bs[0]; // Initialize first carry signal
 
-  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const std::string in1, const std::string in2) {
-    std::swap(gates[in2], gates[in1]);
+  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const string in1, const string in2) {
+    swap(gates[in2], gates[in1]);
     for (auto* vec : {&as, &bs, &cs, &ds}) {
       for (auto& output : *vec) {
         if (output == in2 || output == in1) {
@@ -49,31 +50,31 @@ int main() {
 
   auto findGateOutputs = [&gates, &ds, &as, &cs, &bs](int i) {
     for (const auto &[out_gate, gate_gate] : gates) {
-      if (ds[i].empty() && std::get<0>(gate_gate) == "AND" && ((as[i - 1] == std::get<1>(gate_gate) && cs[i - 1] == std::get<2>(gate_gate)) || (as[i - 1] == std::get<2>(gate_gate) && cs[i - 1] == std::get<1>(gate_gate)))) {
+      if (ds[i].empty() && get<0>(gate_gate) == "AND" && ((as[i - 1] == get<1>(gate_gate) && cs[i - 1] == get<2>(gate_gate)) || (as[i - 1] == get<2>(gate_gate) && cs[i - 1] == get<1>(gate_gate)))) {
         ds[i] = out_gate; break;
-      } else if (!ds[i].empty() && cs[i].empty() && std::get<0>(gate_gate) == "OR" && ((bs[i - 1] == std::get<1>(gate_gate) && ds[i] == std::get<2>(gate_gate)) || (bs[i - 1] == std::get<2>(gate_gate) && ds[i] == std::get<1>(gate_gate)))) {
+      } else if (!ds[i].empty() && cs[i].empty() && get<0>(gate_gate) == "OR" && ((bs[i - 1] == get<1>(gate_gate) && ds[i] == get<2>(gate_gate)) || (bs[i - 1] == get<2>(gate_gate) && ds[i] == get<1>(gate_gate)))) {
         cs[i] = out_gate; break;
-      } else if (!cs[i].empty() && std::get<0>(gate_gate) == "XOR" && ((as[i] == std::get<1>(gate_gate) && cs[i] == std::get<2>(gate_gate)) || (as[i] == std::get<2>(gate_gate) && cs[i] == std::get<1>(gate_gate)))) {
+      } else if (!cs[i].empty() && get<0>(gate_gate) == "XOR" && ((as[i] == get<1>(gate_gate) && cs[i] == get<2>(gate_gate)) || (as[i] == get<2>(gate_gate) && cs[i] == get<1>(gate_gate)))) {
         return out_gate;
       }
     }
-    return std::string{};
+    return string{};
   };
 
   auto gate = gates.at("z00");
-  std::string& in1 = std::get<1>(gate), &in2 = std::get<2>(gate);
-  if (std::get<0>(gate) != "XOR" || !((in1 == "x00" && in2 == "y00") || (in1 == "y00" && in2 == "x00"))) {
+  string& in1 = get<1>(gate), &in2 = get<2>(gate);
+  if (get<0>(gate) != "XOR" || !((in1 == "x00" && in2 == "y00") || (in1 == "y00" && in2 == "x00"))) {
     wrong.push_back("z00");
   }
 
   for (int i = 1; i < as.size(); ++i) {
-    std::string label = std::string("z") + (i < 10 ? "0" : "") + std::to_string(i);
+    string label = string("z") + (i < 10 ? "0" : "") + to_string(i);
     gate = gates.at(label);
-    in1 = std::get<1>(gate), in2 = std::get<2>(gate);
+    in1 = get<1>(gate), in2 = get<2>(gate);
 
-    if (std::get<0>(gate) != "XOR") { // wrong operation
+    if (get<0>(gate) != "XOR") { // wrong operation
       ds[i] = cs[i] = "";
-      std::string labelSwap;
+      string labelSwap;
       while(labelSwap.empty()) {
         labelSwap = findGateOutputs(i);
       }
@@ -81,7 +82,7 @@ int main() {
       gateSwap(label, labelSwap);
     } else if (in1 != as[i] && in2 != as[i]) { // XOR gate with wrong inputs
       wrong.push_back(as[i]);
-      gateSwap(as[i], (std::get<1>(gates.at(in1)) == bs[i - 1] || std::get<2>(gates.at(in1)) == bs[i - 1]) ? in2 : in1);
+      gateSwap(as[i], (get<1>(gates.at(in1)) == bs[i - 1] || get<2>(gates.at(in1)) == bs[i - 1]) ? in2 : in1);
       wrong.push_back(as[i]);
     }
 
@@ -90,9 +91,9 @@ int main() {
     }
   }
 
-  std::ranges::sort(wrong);
+  ranges::sort(wrong);
 
   for (auto i = 0; i < wrong.size(); ++i) {
-    std::cout << wrong[i] << (i < wrong.size()-1 ? "," : "");
+    cout << wrong[i] << (i < wrong.size()-1 ? "," : "");
   }
 }
