@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <ranges>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -85,8 +86,5 @@ int main() {
   }
   sort(result.begin(), result.end());
 
-  for (size_t i = 0; i < result.size(); ++i) {
-    cout << result[i] << (i + 1 < result.size() ? "," : "");
-  }
-  cout << endl;
+  std::cout << std::ranges::to<std::string>(result | std::views::join_with(',')) << std::endl;
 }
