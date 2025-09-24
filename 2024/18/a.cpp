@@ -18,7 +18,9 @@ int main() {
         return 1;
     }
 
-    int xCoord, yCoord, maxCount = 0;
+    int xCoord;
+    int yCoord;
+    int maxCount = 0;
     array<array<bool, 71>, 71> grid{};
 
     for (string line; getline(inputFile, line) && maxCount < 1024; ++maxCount) {
@@ -40,7 +42,8 @@ int main() {
         }
 
         for (int i = 0; i < 4; ++i) {
-            int newX = xCoord + DIRECTIONS[i], newY = yCoord + DIRECTIONS[(i + 3) & 3];
+            int newX = xCoord + DIRECTIONS[i];
+            int newY = yCoord + DIRECTIONS[(i + 3) & 3];
             if (newX >= 0 && newX < 71 && newY >= 0 && newY < 71 && !grid[newX][newY] && dist[newX][newY] == -1) {
                 dist[newX][newY] = dist[xCoord][yCoord] + 1;
                 positions.push({newX, newY});

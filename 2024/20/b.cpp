@@ -30,7 +30,8 @@ int main() {
 
   vector<pair<int, int>> path;
   vector<int> locIndex(grid.size() * grid[0].size(), -1);
-  int direction = 0, idx = 0;
+  int direction = 0;
+  int idx = 0;
   auto encode = [&grid](pair<int, int> pos) { return pos.first * grid[0].size() + pos.second; };
 
   while (grid[pos.first][pos.second] != 'E') {
@@ -60,7 +61,8 @@ int main() {
           continue;
         }
 
-        int nx = x + dx, ny = y + dy;
+        int nx = x + dx;
+        int ny = y + dy;
         if (nx < 0 || nx >= grid.size() || ny < 0 || ny >= grid[0].size()) {
           continue;
         }

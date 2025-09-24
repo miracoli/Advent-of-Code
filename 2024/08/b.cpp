@@ -15,7 +15,8 @@ int main() {
     }
 
     map<char, vector<pair<int, int>>> antennas;
-    int rows = 0, cols;
+    int rows = 0;
+    int cols;
     set<pair<int, int>> antinodes;
 
     for (string line; getline(inputFile, line); ++rows) {

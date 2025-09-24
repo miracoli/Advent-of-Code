@@ -26,13 +26,15 @@ int main() {
         queue<pair<int, int>> q;
         q.emplace(i, j);
         visited[i][j] = true;
-        int area = 1, perimeter = 0;
+        int area = 1;
+        int perimeter = 0;
 
         while (!q.empty()) {
-          auto [cx, cy] = q.front(); 
+          auto [cx, cy] = q.front();
           q.pop();
           for (const auto& dir : dirs) {
-            int nx = cx + dir[0], ny = cy + dir[1];
+            int nx = cx + dir[0];
+            int ny = cy + dir[1];
             if (nx < 0 || nx >= grid.size() || ny < 0 || ny >= grid[0].size() || grid[nx][ny] != grid[i][j]) {
               ++perimeter;
             } else if (!visited[nx][ny]) {

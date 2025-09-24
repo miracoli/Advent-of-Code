@@ -14,12 +14,13 @@ int main() {
     return 1;
   }
 
-  long long checksum = 0, start = 0;
+  long long checksum = 0;
+  long long start = 0;
   vector<tuple<long long, int, int>> disk; // start, size, index
   deque<int> freeBlocks; // indices of free blocks
 
   for (int id = 0, i = 0, len; i < (int)line.size(); start += len, ++i) {
-	len = line[i] - '0';
+        len = line[i] - '0';
     if (!(i & 1)) {
       checksum += id * start * len + id * len * (len - 1) / 2;
     } else {

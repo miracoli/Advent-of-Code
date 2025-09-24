@@ -17,23 +17,31 @@ int main() {
     return 1;
   }
   vector<string> map(istream_iterator<string>(input), {});
-  int rows = map.size(), cols = map[0].size(), totalCost = 0;
+  int rows = map.size();
+  int cols = map[0].size();
+  int totalCost = 0;
   vector<vector<bool>> globalVisited(rows, vector<bool>(cols, false));
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
       if (!globalVisited[i][j]) {
         vector<vector<bool>> localVisited(rows, vector<bool>(cols, false));
-        int minX = i, minY = j, maxX = i, maxY = j, area = 1, sides = 0;
+        int minX = i;
+        int minY = j;
+        int maxX = i;
+        int maxY = j;
+        int area = 1;
+        int sides = 0;
         queue<pair<int, int>> q;
         q.emplace(i, j);
         localVisited[i][j] = globalVisited[i][j] = true;
 
         while (!q.empty()) {
-          auto [x, y] = q.front(); 
+          auto [x, y] = q.front();
           q.pop();
           for (const auto& dir : dirs) {
-            int nx = x + dir[0], ny = y + dir[1];
+            int nx = x + dir[0];
+            int ny = y + dir[1];
             minX = min(minX, nx), maxX = max(maxX, nx);
             minY = min(minY, ny), maxY = max(maxY, ny);
             if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && map[nx][ny] == map[i][j] && !localVisited[nx][ny]) {
