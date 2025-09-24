@@ -25,7 +25,9 @@ int main() {
     }
   }
 
-  int totalWays = 0, rows = grid.size(), cols = grid[0].size();
+  int totalWays = 0;
+  int rows = grid.size();
+  int cols = grid[0].size();
   vector<vector<int>> ways(rows, vector<int>(cols, 0)); // DP table to store path counts
 
   for (auto [x, y] : zeroPositions) {
@@ -42,7 +44,8 @@ int main() {
     }
 
     for (auto [dx, dy] : { pair<int, int>{0, 1}, pair<int, int>{0, -1}, pair<int, int>{1, 0}, pair<int, int>{-1, 0} }) {
-      int neighborX = currentX + dx, neighborY = currentY + dy;
+      int neighborX = currentX + dx;
+      int neighborY = currentY + dy;
       if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
         if (ways[neighborY][neighborX] == 0) {
           q.push({neighborX, neighborY}); // First visit

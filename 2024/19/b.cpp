@@ -8,7 +8,8 @@
 using namespace std;
 
 unordered_map<string_view, uint64_t> memo;
-vector<string> patterns, designs;
+vector<string> patterns;
+vector<string> designs;
 
 uint64_t countWays(string_view design) {
   if (design.empty()) {

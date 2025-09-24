@@ -14,7 +14,9 @@ int main() {
   }
 
   vector<string> map;
-  int direction = 0, x = 0, y = 0;
+  int direction = 0;
+  int x = 0;
+  int y = 0;
   
   for (string line; getline(inputFile, line); map.push_back(line)) {
     if (auto pos = line.find('^'); pos != string::npos) {
@@ -26,7 +28,8 @@ int main() {
   constexpr array<int, 4> directionOffsets{0, 1, 0, -1};
 
   while (true) {
-    int nx = x + directionOffsets[direction], ny = y + directionOffsets[(direction + 3) & 3];
+    int nx = x + directionOffsets[direction];
+    int ny = y + directionOffsets[(direction + 3) & 3];
     if (ny < 0 || ny >= map.size() || nx < 0 || nx >= map[0].size()) {
       break;
     } else if (map[ny][nx] == '#') {

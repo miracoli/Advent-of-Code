@@ -20,7 +20,8 @@ int main() {
     return 1;
   }
   vector<string> grid;
-  pair<uint_fast16_t, uint_fast16_t> start, end;
+  pair<uint_fast16_t, uint_fast16_t> start;
+  pair<uint_fast16_t, uint_fast16_t> end;
 
   for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
     for (uint_fast8_t col = 0; col < line.size(); ++col) {
@@ -30,7 +31,8 @@ int main() {
     }
   }
 
-  uint_fast32_t rows = grid.size(), cols = grid[0].size();
+  uint_fast32_t rows = grid.size();
+  uint_fast32_t cols = grid[0].size();
   vector visited(rows, vector(cols, vector(4, numeric_limits<uint_fast32_t>::max())));
   vector<vector<vector<vector<tuple<int, int, int>>>>> predecessors(rows, vector<vector<vector<tuple<int, int, int>>>>(cols, vector<vector<tuple<int, int, int>>>(4)));
 
@@ -47,7 +49,8 @@ int main() {
       end = {r, c};
       break;
     }
-    uint_fast16_t nr = r + dx[(dir + 3) & 3], nc = c + dx[dir];
+    uint_fast16_t nr = r + dx[(dir + 3) & 3];
+    uint_fast16_t nc = c + dx[dir];
     if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] != '#') {
       if (cost + 1 < visited[nr][nc][dir]) {
         visited[nr][nc][dir] = cost + 1;

@@ -11,7 +11,11 @@ using namespace std;
 int main() {
   const int width = 101;
   const int height = 103;
-  int seconds = 0, px, py, vx, vy;
+  int seconds = 0;
+  int px;
+  int py;
+  int vx;
+  int vy;
 
   vector<tuple<int, int, int, int>> robots; // (px, py, vx, vy)
   ifstream inputFile("input.txt");

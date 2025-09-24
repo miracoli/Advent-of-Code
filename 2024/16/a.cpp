@@ -27,7 +27,8 @@ int main() {
     }
   }
 
-  uint_fast16_t rows = grid.size(), cols = grid[0].size();
+  uint_fast16_t rows = grid.size();
+  uint_fast16_t cols = grid[0].size();
   vector<uint_fast32_t> visited(rows * cols * 4, numeric_limits<uint_fast32_t>::max());
 
   priority_queue<tuple<uint_fast32_t, uint_fast16_t, uint_fast16_t, uint_fast8_t>, vector<tuple<uint_fast32_t, uint_fast16_t, uint_fast16_t, uint_fast8_t>>, greater<>> pq;
@@ -43,7 +44,8 @@ int main() {
       break;
     }
 
-    uint_fast16_t newX = x + directions[direction][0], newY = y + directions[direction][1];
+    uint_fast16_t newX = x + directions[direction][0];
+    uint_fast16_t newY = y + directions[direction][1];
     auto& currentVisited = visited[(newY * cols + newX) * 4 + direction];
     if (newX < cols && newY < rows && grid[newY][newX] != '#' && cost + 1 < currentVisited) {
       currentVisited = cost + 1;

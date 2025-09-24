@@ -16,12 +16,16 @@ int main() {
     return 1;
   }
   vector<string> grid{istream_iterator<string>{inputFile}, istream_iterator<string>{}};
-  int rows = grid.size(), cols = grid[0].size(), count = 0;
+  int rows = grid.size();
+  int cols = grid[0].size();
+  int count = 0;
 
   for (int row = 0; row < rows; ++row) {
     for (int col = 0; col < cols; ++col) {
       for (auto [dx, dy] : directions) {
-        int x = row, y = col, k = 0;
+        int x = row;
+        int y = col;
+        int k = 0;
         for (; k < TARGET.size() && x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] == TARGET[k]; ++k) {
           x += dx; y += dy;
         }

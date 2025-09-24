@@ -15,7 +15,10 @@ int main() {
     return 1;
   }
   array<int, 4> quadrants{};
-  int px, py, vx, vy;
+  int px;
+  int py;
+  int vx;
+  int vy;
   for (string line; getline(inputFile, line); ) {
     sscanf(line.c_str(), "p=%d,%d v=%d,%d", &px, &py, &vx, &vy);
 

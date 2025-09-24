@@ -13,7 +13,8 @@ int main() {
   }
 
   vector<string> map;
-  int startX = 0, startY = 0;
+  int startX = 0;
+  int startY = 0;
 
   for (string line; getline(inputFile, line); map.emplace_back(std::move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
@@ -21,19 +22,22 @@ int main() {
     }
   }
 
-  const int H = (int)map.size(), W = (int)map[0].size();
+  const int H = (int)map.size();
+  const int W = (int)map[0].size();
   constexpr array<array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
   auto id = [W](int x, int y){ return y * W + x; };
 
   vector<bool> seen(W * H, 0);
   vector<tuple<int, int, uint_fast8_t>> candidates;
 
-  int x = startX, y = startY;
+  int x = startX;
+  int y = startY;
   uint_fast8_t direction = 0;
   seen[id(x,y)] = 1;
 
   while (true) {
-    int nx = x + dOff[1][direction], ny = y + dOff[0][direction];
+    int nx = x + dOff[1][direction];
+    int ny = y + dOff[0][direction];
     if (ny < 0 || ny >= H || nx < 0 || nx >= W) {
       break;
     } else if (map[ny][nx] == '#') {
@@ -55,7 +59,8 @@ int main() {
   int endlessLoopCount = 0;
 
   for (auto cell : candidates) {
-    auto px = get<0>(cell), py = get<1>(cell);
+    auto px = get<0>(cell);
+    auto py = get<1>(cell);
     direction = get<2>(cell);
 
     // Start from predecessor of the obstacle cell
@@ -64,7 +69,8 @@ int main() {
 
     ++stamp;
     while (true) {
-      int nx = x + dOff[1][direction], ny = y + dOff[0][direction];
+      int nx = x + dOff[1][direction];
+      int ny = y + dOff[0][direction];
       if (ny < 0 || ny >= H || nx < 0 || nx >= W) {
          break;
       }

@@ -9,7 +9,9 @@
 using namespace std;
 
 vector<int64_t> instructions;
-int64_t A, B, C;
+int64_t A;
+int64_t B;
+int64_t C;
 
 int64_t comboValue(int64_t operand)  {
   return operand < 4 ? operand : operand == 4 ? A : operand == 5 ? B : C;
@@ -22,7 +24,8 @@ int64_t rec(const vector<int64_t>& program, size_t instructionPointer, int64_t c
         
     A = newCurrent;
     for (int ip = 0; ip < instructions.size();) {
-      int64_t opcode = instructions[ip++], operand = instructions[ip++];
+      int64_t opcode = instructions[ip++];
+      int64_t operand = instructions[ip++];
       switch (opcode) {
         case 0:  // adv
             A /= (1 << comboValue(operand));

@@ -11,7 +11,9 @@ int main() {
     return 1;
   }
   vector<int> disk;
-  uint64_t idx = 0, id = 0, checksum = 0;
+  uint64_t idx = 0;
+  uint64_t id = 0;
+  uint64_t checksum = 0;
   for (istreambuf_iterator<char> it(inputFile), end; it != end; ++it, ++idx) {
     disk.insert(disk.end(), *it - '0', idx & 1 ? -1 : id++);
   }

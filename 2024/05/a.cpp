@@ -18,7 +18,8 @@ int main() {
   unordered_map<int, unordered_set<int>> rules;
 
   for (string line; getline(inputFile, line) && line.contains('|');) {
-    int from, to; 
+    int from;
+    int to;
     char delim; 
     stringstream(line) >> from >> delim >> to;
     rules[from].insert(to);

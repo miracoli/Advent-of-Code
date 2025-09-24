@@ -7,7 +7,8 @@
 using namespace std;
 
 unordered_map<string_view, bool> memo;
-vector<string> patterns, designs;
+vector<string> patterns;
+vector<string> designs;
 
 bool canFormDesign(string_view design) {
   if (design.empty()) {

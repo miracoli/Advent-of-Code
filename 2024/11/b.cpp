@@ -16,7 +16,10 @@ constexpr array<uint64_t, 20> POW10{
   10000000000000000000ULL
 };
 
-struct Node { uint64_t stone, count; };
+struct Node {
+  uint64_t stone;
+  uint64_t count;
+};
 
 void sort_and_merge(vector<Node>& v) {
   ranges::sort(v, [](const Node& a, const Node& b) {
@@ -41,7 +44,8 @@ int main() {
     return 1;
   }
 
-  vector<Node> stones, next;
+  vector<Node> stones;
+  vector<Node> next;
   for (uint64_t num; inputFile >> num; stones.emplace_back(num, 1)); // Read input stones as (stone,1),
 
   uint_fast8_t blinks = 75;
