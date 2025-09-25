@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include <array>
+#include <ranges>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ int main() {
     array<array<bool, 71>, 71> grid{};
 
     for (string line; getline(inputFile, line) && maxCount < 1024; ++maxCount) {
-        replace(line.begin(), line.end(), ',', ' ');
+        ranges::replace(line, ',', ' ');
         if (stringstream(line) >> xCoord >> yCoord) {
             grid[xCoord][yCoord] = true;
         }

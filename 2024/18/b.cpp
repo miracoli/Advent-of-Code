@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <array>
+#include <ranges>
 
 using namespace std;
 
@@ -71,7 +72,7 @@ int main() {
   bool solvable = true;
 
   for (string line; getline(input, line) && solvable;) {
-    replace(line.begin(), line.end(), ',', ' ');
+    ranges::replace(line, ',', ' ');
     (stringstream(line) >> x >> y);
 
     blocked[x][y] = true;
