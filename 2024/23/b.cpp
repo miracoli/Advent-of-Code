@@ -12,7 +12,7 @@ using namespace std;
 vector<unordered_set<int>> connections;
 unordered_set<int> largestClique;
 
-void findLargestClique(unordered_set<int>& R, unordered_set<int>& P, unordered_set<int>& X) {
+void findLargestClique(const unordered_set<int>& R, unordered_set<int>& P, unordered_set<int>& X) {
   if (P.empty() && X.empty() && R.size() > largestClique.size()) {
     largestClique = R;
     return;
