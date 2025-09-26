@@ -12,8 +12,9 @@ pair<int, int> robot;
 int gpsSum = 0;
 
 bool moveBox(const pair<int, int>& box, const pair<int, int>& delta) {
-  pair<int, int> newBox = {box.first + delta.first, box.second + delta.second};
-  if (grid[newBox.second][newBox.first] == '.' || (grid[newBox.second][newBox.first] == 'O' && moveBox(newBox, delta))) {
+  if (auto newBox = pair<int, int>{box.first + delta.first, box.second + delta.second};
+      grid[newBox.second][newBox.first] == '.' ||
+          (grid[newBox.second][newBox.first] == 'O' && moveBox(newBox, delta))) {
     gpsSum += 100 * delta.second + delta.first;
     grid[newBox.second][newBox.first] = 'O';
     return true;
