@@ -12,7 +12,8 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  vector<uint32_t> locks, keys;
+  vector<uint32_t> locks;
+  vector<uint32_t> keys;
   for (string line; getline(file, line);) {
     if (!line.empty()) {
       uint32_t packed = 0;

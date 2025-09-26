@@ -50,8 +50,8 @@ int main() {
       break;
     }
     uint_fast16_t nr = r + dx[(dir + 3) & 3];
-    uint_fast16_t nc = c + dx[dir];
-    if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] != '#') {
+    if (uint_fast16_t nc = c + dx[dir];
+        nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] != '#') {
       if (cost + 1 < visited[nr][nc][dir]) {
         visited[nr][nc][dir] = cost + 1;
         pq.emplace(cost + 1, nr, nc, dir);

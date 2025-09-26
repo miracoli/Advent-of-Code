@@ -46,8 +46,8 @@ int main() {
 
     uint_fast16_t newX = x + directions[direction][0];
     uint_fast16_t newY = y + directions[direction][1];
-    auto& currentVisited = visited[(newY * cols + newX) * 4 + direction];
-    if (newX < cols && newY < rows && grid[newY][newX] != '#' && cost + 1 < currentVisited) {
+    if (auto& currentVisited = visited[(newY * cols + newX) * 4 + direction];
+        newX < cols && newY < rows && grid[newY][newX] != '#' && cost + 1 < currentVisited) {
       currentVisited = cost + 1;
       pq.emplace(cost + 1, newX, newY, direction);
     }
