@@ -2,7 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <cstdint>
+#include <algorithm>
+#include <ranges>
 using namespace std;
 
 int main() {
@@ -15,25 +16,24 @@ int main() {
   vector<uint32_t> locks;
   vector<uint32_t> keys;
   for (string line; getline(file, line);) {
-    if (!line.empty()) {
-      uint32_t packed = 0;
-      for (size_t row = 0; row < 6 && getline(file, line); ++row) {
-        for (size_t col = 0; col < 5; ++col) {
-          if (line[col] == '#') {
-            packed |= (1U << (row * 5 + col));
-          }
+    if (line.empty()) {
+      continue;
+    }
+    uint32_t packed = 0;
+    for (size_t row = 0; row < 6 && getline(file, line); ++row) {
+      for (size_t col = 0; col < 5; ++col) {
+        if (line[col] == '#') {
+          packed |= (1U << (row * 5 + col));
         }
       }
-      (packed & (1 << 29) ? locks : keys).push_back(packed);
     }
+    (packed & (1 << 29) ? locks : keys).push_back(packed);
   }
 
-  int validPairs = 0;
-  for (auto lock : locks) {
-    for (auto key : keys) {
-      validPairs += !(lock & key);
-    }
-  }
+  auto isValidPair = [](const auto& tup) {
+    auto [lock, key] = tup;
+    return (lock & key) == 0;
+  };
 
-  cout << validPairs << endl;
+  cout << ranges::count_if(views::cartesian_product(locks, keys), isValidPair) << endl;
 }
