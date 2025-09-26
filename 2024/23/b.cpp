@@ -54,7 +54,7 @@ int main() {
   unordered_map<string,int> id;
   vector<string> name;
 
-  auto getId = [&id, &name](const string& s) -> int {
+  auto getId = [&id, &name](const string& s) {
     auto [it, added] = id.try_emplace(s, (int)id.size());
     if (added) name.push_back(s);
     return it->second;
@@ -84,7 +84,7 @@ int main() {
   for (int v : largestClique) {
     result.push_back(name[v]);
   }
-  sort(result.begin(), result.end());
+  std::ranges::sort(result);
 
   std::cout << std::ranges::to<std::string>(result | std::views::join_with(',')) << std::endl;
 }

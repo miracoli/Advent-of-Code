@@ -20,7 +20,7 @@ unordered_map<char, array<int8_t, 2>> directions = {{'^', {-1, 0}}, {'v', {1, 0}
 unordered_map<string, uint64_t> cache;
 constexpr uint_fast8_t limit = 2;
 
-uint64_t solve(string path, char depth = 0) {
+uint64_t solve(const string& path, char depth = 0) {
   auto key = path + depth;
   uint64_t& result = cache[key];
   if (result) {
