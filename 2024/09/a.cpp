@@ -12,13 +12,13 @@ int main() {
   }
   vector<int> disk;
   uint64_t idx = 0;
-  uint64_t id = 0;
+  int id = 0;
   uint64_t checksum = 0;
   for (istreambuf_iterator<char> it(inputFile), end; it != end; ++it, ++idx) {
     disk.insert(disk.end(), *it - '0', idx & 1 ? -1 : id++);
   }
 
-  for (int freeIdx = 0, usedIdx = disk.size() - 1; freeIdx <= usedIdx; --usedIdx) {
+  for (int freeIdx = 0, usedIdx = static_cast<int>(disk.size()) - 1; freeIdx <= usedIdx; --usedIdx) {
     if(disk[usedIdx] != -1) {
       while (disk[freeIdx] != -1 && freeIdx <= usedIdx) {
         checksum += freeIdx * disk[freeIdx];
