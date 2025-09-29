@@ -23,7 +23,9 @@ void findLargestClique(const unordered_set<int>& R, unordered_set<int>& P, unord
 
   unordered_set<int> P_copy = P;
   for (int v : P_copy) {
-    unordered_set<int> R_new = R, P_new, X_new;
+    unordered_set<int> R_new = R;
+    unordered_set<int> P_new;
+    unordered_set<int> X_new;
     R_new.insert(v);
 
     for (int p : P) {
@@ -61,9 +63,11 @@ int main() {
   };
 
   vector<pair<int,int>> edges;
-  string a, b;
-   while (getline(input, a, '-') && getline(input, b)) {
-    int u = getId(a), v = getId(b);
+  string a;
+  string b;
+  while (getline(input, a, '-') && getline(input, b)) {
+    int u = getId(a);
+    int v = getId(b);
     if (u != v) edges.emplace_back(u, v);
   }
 
@@ -74,7 +78,9 @@ int main() {
     connections[v].insert(u);
   }
 
-  unordered_set<int> R, P, X;
+  unordered_set<int> R;
+  unordered_set<int> P;
+  unordered_set<int> X;
   for (int i = 0; i < n; ++i) {
     P.insert(i);
   }

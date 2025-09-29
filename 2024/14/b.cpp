@@ -36,7 +36,7 @@ int main() {
     ranges::fill(map, 0);
 
     bool collision = false;
-    for (auto &[robotPx, robotPy, robotVx, robotVy] : robots) {
+    for (const auto &[robotPx, robotPy, robotVx, robotVy] : robots) {
       int x = robotPx + seconds * robotVx;
       int y = robotPy + seconds * robotVy;
 

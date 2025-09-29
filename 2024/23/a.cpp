@@ -13,7 +13,7 @@ int main() {
   }
   unordered_map<string, unordered_set<string>> connections;
 
-  for(string a, b; getline(input, a, '-') && getline(input, b);) {
+  for (string a, b; getline(input, a, '-') && getline(input, b);) {
     if(a < b) {
       connections[a].insert(b);
     } else {
