@@ -25,7 +25,7 @@ int main() {
     px = (px + 100 * vx % width + width) % width;
     py = (py + 100 * vy % height + height) % height;
     if (px != width / 2 && py != height / 2) {
-      quadrants[(px > width / 2) + 2 * (py > height / 2)]++;
+      ++quadrants[static_cast<int>(px > width / 2) + 2 * static_cast<int>(py > height / 2)];
     }
   }
 

@@ -17,8 +17,8 @@ int main() {
     return 1;
   }
   vector<string> map(istream_iterator<string>(input), {});
-  int rows = map.size();
-  int cols = map[0].size();
+  int rows = static_cast<int>(map.size());
+  int cols = static_cast<int>(map[0].size());
   int totalCost = 0;
   vector<vector<bool>> globalVisited(rows, vector<bool>(cols, false));
 
@@ -42,8 +42,10 @@ int main() {
           for (const auto& dir : dirs) {
             int nx = x + dir[0];
             int ny = y + dir[1];
-            minX = min(minX, nx), maxX = max(maxX, nx);
-            minY = min(minY, ny), maxY = max(maxY, ny);
+            minX = min(minX, nx);
+            maxX = max(maxX, nx);
+            minY = min(minY, ny);
+            maxY = max(maxY, ny);
             if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && map[nx][ny] == map[i][j] && !localVisited[nx][ny]) {
               localVisited[nx][ny] = globalVisited[nx][ny] = true;
               ++area;

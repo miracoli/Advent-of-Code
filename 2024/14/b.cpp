@@ -25,8 +25,9 @@ int main() {
     return 1;
   }
 
-  for (string line; getline(inputFile, line); robots.emplace_back(px, py, vx, vy)) {
+  for (string line; getline(inputFile, line); ) {
     sscanf(line.c_str(), "p=%d,%d v=%d,%d", &px, &py, &vx, &vy);
+    robots.emplace_back(px, py, vx, vy);
   }
 
   vector<uint8_t> map(height * width, false);
@@ -35,9 +36,9 @@ int main() {
     ranges::fill(map, 0);
 
     bool collision = false;
-    for (auto &robot : robots) {
-      int x = get<0>(robot) + seconds * get<2>(robot);
-      int y = get<1>(robot) + seconds * get<3>(robot);
+    for (auto &[robotPx, robotPy, robotVx, robotVy] : robots) {
+      int x = robotPx + seconds * robotVx;
+      int y = robotPy + seconds * robotVy;
 
       x %= width;
       if(x < 0) {
