@@ -20,7 +20,8 @@ int main() {
   
   for (string line; getline(inputFile, line); map.push_back(line)) {
     if (auto pos = line.find('^'); pos != string::npos) {
-      x = pos, y = map.size();
+      x = static_cast<int>(pos);
+      y = static_cast<int>(map.size());
     }
   }
 
