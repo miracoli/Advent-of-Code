@@ -22,18 +22,18 @@ int main() {
     }
   }
 
-  const int H = (int)map.size();
-  const int W = (int)map[0].size();
+  const auto H = static_cast<int>(map.size());
+  const auto W = static_cast<int>(map[0].size());
   constexpr array<array<int_fast8_t, 4>, 2> dOff{{{{-1, 0, 1, 0}}, {{0, 1, 0, -1}}}}; // [dy][dir], [dx][dir]
   auto id = [W](int x, int y){ return y * W + x; };
 
-  vector<bool> seen(W * H, 0);
+  vector<bool> seen(W * H, false);
   vector<tuple<int, int, uint_fast8_t>> candidates;
 
   int x = startX;
   int y = startY;
   uint_fast8_t direction = 0;
-  seen[id(x,y)] = 1;
+  seen[id(x,y)] = true;
 
   while (true) {
     int nx = x + dOff[1][direction];
@@ -46,7 +46,7 @@ int main() {
       x = nx; y = ny;
       int cid = id(x,y);
       if (!seen[cid]) {
-        seen[cid] = 1;
+        seen[cid] = true;
         candidates.push_back({x, y, direction});
       }
     }
