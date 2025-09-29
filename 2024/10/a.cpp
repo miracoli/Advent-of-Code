@@ -23,8 +23,8 @@ int main() {
     }
   }
   int totalScore = 0;
-  int rows = grid.size();
-  int cols = grid[0].size();
+  int rows = static_cast<int>(grid.size());
+  int cols = static_cast<int>(grid[0].size());
   vector<vector<bool>> visited(rows, vector<bool>(cols));
   for(auto [x, y] : zeroPositions) {
     visited.assign(rows, vector<bool>(cols, false));

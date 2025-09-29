@@ -29,7 +29,7 @@ int main() {
         next[1] += count;
       } else if (to_string(stone).size() % 2 == 0) {
         string s = to_string(stone);
-        int mid = s.size() / 2;
+        int mid = static_cast<int>(s.size()) / 2;
         next[(uint64_t)stoll(s.substr(0, mid))] += count;
         next[(uint64_t)stoll(s.substr(mid))] += count;
       } else {
