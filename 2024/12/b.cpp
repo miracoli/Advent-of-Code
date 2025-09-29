@@ -17,8 +17,8 @@ int main() {
     return 1;
   }
   vector<string> map(istream_iterator<string>(input), {});
-  int rows = static_cast<int>(map.size());
-  int cols = static_cast<int>(map[0].size());
+  auto rows = static_cast<int>(map.size());
+  auto cols = static_cast<int>(map[0].size());
   int totalCost = 0;
   vector<vector<bool>> globalVisited(rows, vector<bool>(cols, false));
 
