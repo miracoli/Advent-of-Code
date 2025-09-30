@@ -1,6 +1,7 @@
-#include <iostream>
+#include <algorithm>
 #include <fstream>
-#include <vector>
+#include <iostream>
+#include <ranges>
 #include <string>
 
 using namespace std;
@@ -15,9 +16,9 @@ int main() {
   uint64_t sum = 0;
 
   for (string line; getline(inputFile, line);) {
-    auto firstIt = find_if(line.begin(), line.end(), ::isdigit);
-    auto lastIt = find_if(line.rbegin(), line.rend(), ::isdigit);
-    if(firstIt != line.end()) {
+    auto firstIt = ranges::find_if(line, ::isdigit);
+    auto lastIt = ranges::find_if(line | views::reverse, ::isdigit);
+    if (firstIt != ranges::end(line)) {
       sum += 10 * (*firstIt - '0');
       sum += *lastIt - '0';
     }
