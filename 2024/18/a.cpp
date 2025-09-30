@@ -4,13 +4,10 @@
 #include <fstream>
 #include <algorithm>
 #include <array>
-#include <ranges>
 
 using namespace std;
 
 constexpr array<int, 4> DIRECTIONS{0, 1, 0, -1};
-array<array<int, 71>, 71> dist{};
-queue<pair<int, int>> positions({{0, 0}});
 
 int main() {
     ifstream inputFile("input.txt");
@@ -23,10 +20,11 @@ int main() {
     int yCoord;
     int maxCount = 0;
     array<array<bool, 71>, 71> grid{};
+    array<array<int, 71>, 71> dist{};
+    queue<pair<int, int>> positions({{0, 0}});
 
     for (string line; getline(inputFile, line) && maxCount < 1024; ++maxCount) {
-        ranges::replace(line, ',', ' ');
-        if (stringstream(line) >> xCoord >> yCoord) {
+        if (char comma; stringstream(line) >> xCoord >> comma >> yCoord) {
             grid[xCoord][yCoord] = true;
         }
     }
@@ -36,17 +34,18 @@ int main() {
     }
     dist[0][0] = 0;
     while (!positions.empty()) {
-        auto [xCoord, yCoord] = positions.front(); positions.pop();
-        if (xCoord == 70 && yCoord == 70) {
-            cout << dist[xCoord][yCoord] << endl;
+        auto [currentX, currentY] = positions.front();
+        positions.pop();
+        if (currentX == 70 && currentY == 70) {
+            cout << dist[currentX][currentY] << endl;
             break;
         }
 
         for (int i = 0; i < 4; ++i) {
-            int newX = xCoord + DIRECTIONS[i];
-            int newY = yCoord + DIRECTIONS[(i + 3) & 3];
+            int newX = currentX + DIRECTIONS[i];
+            int newY = currentY + DIRECTIONS[(i + 3) & 3];
             if (newX >= 0 && newX < 71 && newY >= 0 && newY < 71 && !grid[newX][newY] && dist[newX][newY] == -1) {
-                dist[newX][newY] = dist[xCoord][yCoord] + 1;
+                dist[newX][newY] = dist[currentX][currentY] + 1;
                 positions.push({newX, newY});
             }
         }
