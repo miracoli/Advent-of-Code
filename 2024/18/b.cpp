@@ -12,57 +12,60 @@ constexpr int N = 71;
 constexpr array<int, 4> dx{1, 0, -1, 0};
 constexpr array<int, 4> dy{0, 1, 0, -1};
 
-array<array<bool, N>, N> blocked{};
-array<array<int, N>, N>  visitStamp{};
-int  bfsRun = 1;
-array<array<int, N>, N>  parentX{};
-array<array<int, N>, N>  parentY{};
-unordered_set<int> pathCells;
-array<int, N * N> qx{};
-array<int, N * N> qy{};
-
-bool bfs() {
-  int head = 0;
-  int tail = 0;
-
-  qx[tail] = qy[tail++] = 0;
-  visitStamp[0][0] = ++bfsRun;
-  parentX[0][0] = parentY[0][0] = -1;
-
-  while (head < tail) {
-    int x = qx[head];
-    int y = qy[head++];
-    if (x == N - 1 && y == N - 1) {
-      pathCells.clear();
-      int cy = y;
-      for (int cx = x; cx != -1; ) {
-        pathCells.insert(cx * N + cy);
-        tie(cx, cy) = make_pair(parentX[cx][cy], parentY[cx][cy]);
-      }
-      return true;
-    }
-    for (int k = 0; k < 4; ++k) {
-      int nx = x + dx[k];
-      int ny = y + dy[k];
-      if (nx >= 0 && ny >= 0 && nx < N && ny < N && !blocked[nx][ny] && visitStamp[nx][ny] != bfsRun) {
-        visitStamp[nx][ny] = bfsRun;
-        parentX[nx][ny] = x;
-        parentY[nx][ny] = y;
-        qx[tail] = nx;
-        qy[tail++] = ny;
-      }
-    }
-  }
-  pathCells.clear();
-  return false;
-}
-
 int main() {
   ifstream input("input.txt");
   if (!input) {
     cerr << "Error: unable to open input.txt" << endl;
     return 1;
   }
+
+  array<array<bool, N>, N> blocked{};
+  array<array<int, N>, N> visitStamp{};
+  int bfsRun = 1;
+  array<array<int, N>, N> parentX{};
+  array<array<int, N>, N> parentY{};
+  unordered_set<int> pathCells;
+  array<int, N * N> qx{};
+  array<int, N * N> qy{};
+
+  auto bfs = [&]() {
+    int head = 0;
+    int tail = 0;
+
+    qx[tail] = qy[tail++] = 0;
+    visitStamp[0][0] = ++bfsRun;
+    parentX[0][0] = parentY[0][0] = -1;
+
+    while (head < tail) {
+      int x = qx[head];
+      int y = qy[head++];
+      if (x == N - 1 && y == N - 1) {
+        pathCells.clear();
+        int cy = y;
+        for (int cx = x; cx != -1;) {
+          pathCells.insert(cx * N + cy);
+          int px = parentX[cx][cy];
+          int py = parentY[cx][cy];
+          cx = px;
+          cy = py;
+        }
+        return true;
+      }
+      for (int k = 0; k < 4; ++k) {
+        int nx = x + dx[k];
+        int ny = y + dy[k];
+        if (nx >= 0 && ny >= 0 && nx < N && ny < N && !blocked[nx][ny] && visitStamp[nx][ny] != bfsRun) {
+          visitStamp[nx][ny] = bfsRun;
+          parentX[nx][ny] = x;
+          parentY[nx][ny] = y;
+          qx[tail] = nx;
+          qy[tail++] = ny;
+        }
+      }
+    }
+    pathCells.clear();
+    return false;
+  };
 
   bfs();
 
