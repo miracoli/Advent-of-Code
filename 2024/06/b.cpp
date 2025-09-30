@@ -58,10 +58,8 @@ int main() {
 
   int endlessLoopCount = 0;
 
-  for (auto cell : candidates) {
-    auto px = get<0>(cell);
-    auto py = get<1>(cell);
-    direction = get<2>(cell);
+  for (auto [px, py, dir] : candidates) {
+    direction = dir;
 
     // Start from predecessor of the obstacle cell
     x = px - dOff[1][direction];

@@ -20,7 +20,7 @@ int main() {
     set<pair<int, int>> antinodes;
 
     for (string line; getline(inputFile, line); ++rows) {
-        cols = line.size();
+        cols = static_cast<int>(line.size());
         for (int x = 0; x < line.size(); ++x) {
             if (line[x] != '.') {
                 antennas[line[x]].emplace_back(x, rows);
