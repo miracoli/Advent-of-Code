@@ -16,8 +16,8 @@ int main() {
     return 1;
   }
   vector<string> grid{istream_iterator<string>{inputFile}, istream_iterator<string>{}};
-  int rows = grid.size();
-  int cols = grid[0].size();
+  auto rows = static_cast<int>(grid.size());
+  auto cols = static_cast<int>(grid[0].size());
   int count = 0;
 
   for (int row = 0; row < rows; ++row) {
@@ -29,7 +29,9 @@ int main() {
         for (; k < TARGET.size() && x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] == TARGET[k]; ++k) {
           x += dx; y += dy;
         }
-        count += (k == TARGET.size());
+        if (k == TARGET.size()) {
+          ++count;
+        }
       }
     }
   }
