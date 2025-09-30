@@ -47,7 +47,9 @@ int main() {
   
   int possible = 0;
   for (const auto &designStr : designs) {
-    possible += canFormDesign(designStr);
+    if (canFormDesign(designStr)) {
+      ++possible;
+    }
   }
   
   cout << possible << endl;

@@ -18,7 +18,12 @@ int main() {
   bool enable = true;
 
   for (sregex_iterator it(content.begin(), content.end(), r), end; it != end; ++it) {
-    enable = (*it).str() == "do()" ? true : (*it).str() == "don't()" ? false : enable;
+    const string command = (*it).str();
+    if (command == "do()") {
+      enable = true;
+    } else if (command == "don't()") {
+      enable = false;
+    }
     sum += enable && (*it)[1].matched ? stoi((*it)[1]) * stoi((*it)[2]) : 0;
   }
 
