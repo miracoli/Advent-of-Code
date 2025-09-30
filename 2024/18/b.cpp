@@ -44,10 +44,7 @@ int main() {
         int cy = y;
         for (int cx = x; cx != -1;) {
           pathCells.insert(cx * N + cy);
-          int px = parentX[cx][cy];
-          int py = parentY[cx][cy];
-          cx = px;
-          cy = py;
+          tie(cx, cy) = make_pair(parentX[cx][cy], parentY[cx][cy]);
         }
         return true;
       }
