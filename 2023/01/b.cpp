@@ -35,12 +35,18 @@ int main() {
     int firstDigit = -1;
     int lastDigit  = -1;
 
-    for (size_t i = 0; i < line.size() && firstDigit == -1; ++i) { // left-to-right
+    for (size_t i = 0; i < line.size(); ++i) { // left-to-right
       checkAt(line, i, firstDigit);
+      if (firstDigit != -1) {
+        break;
+      }
     }
 
-    for (size_t i = line.size() - 1; i >= 0 && lastDigit == -1; --i) { // right-to-left
-      checkAt(line, i, lastDigit);
+    for (int i = static_cast<int>(line.size()) - 1; i >= 0; --i) { // right-to-left
+      checkAt(line, static_cast<size_t>(i), lastDigit);
+      if (lastDigit != -1) {
+        break;
+      }
     }
 
     if (firstDigit != -1) {
