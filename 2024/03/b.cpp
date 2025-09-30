@@ -18,8 +18,7 @@ int main() {
   bool enable = true;
 
   for (sregex_iterator it(content.begin(), content.end(), r), end; it != end; ++it) {
-    const string command = (*it).str();
-    if (command == "do()") {
+    if (const string command = (*it).str(); command == "do()") {
       enable = true;
     } else if (command == "don't()") {
       enable = false;
