@@ -18,8 +18,7 @@ int main() {
   uint64_t sum = 0;
 
   auto checkAt = [&](const string& line, size_t i, int& target) {
-    char c = line[i];
-    if (isdigit(static_cast<unsigned char>(c))) {
+    if (const char c = line[i]; isdigit(static_cast<unsigned char>(c))) {
         target = c - '0';
         return;
     }
