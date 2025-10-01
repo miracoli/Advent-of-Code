@@ -26,8 +26,8 @@ int main() {
   }
 
   int totalWays = 0;
-  int rows = static_cast<int>(grid.size());
-  int cols = static_cast<int>(grid[0].size());
+  auto rows = static_cast<int>(grid.size());
+  auto cols = static_cast<int>(grid[0].size());
   vector<vector<int>> ways(rows, vector<int>(cols, 0)); // DP table to store path counts
 
   for (auto [x, y] : zeroPositions) {
