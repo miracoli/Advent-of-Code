@@ -25,23 +25,24 @@ int main() {
   int totalScore = 0;
   auto rows = static_cast<int>(grid.size());
   auto cols = static_cast<int>(grid[0].size());
-  vector<vector<bool>> visited(rows, vector<bool>(cols));
-  for(auto [x, y] : zeroPositions) {
-    visited.assign(rows, vector<bool>(cols, false));
+  vector<vector<int>> visited(rows, vector<int>(cols, -1));
+  int stamp = 0;
+  for (auto [x, y] : zeroPositions) {
+    ++stamp;
     q.push({ x, y });
-    visited[y][x] = true;
+    visited[y][x] = stamp;
     while (!q.empty()) {
       auto [currentX, currentY] = q.front();
       q.pop();
-      if (grid[currentY][currentX] == '9') { 
-        ++totalScore; 
-        continue; 
+      if (grid[currentY][currentX] == '9') {
+        ++totalScore;
+        continue;
       }
       for (auto [dx, dy] : { pair<int, int>{0, 1}, pair<int, int>{0, -1}, pair<int, int>{1, 0}, pair<int, int>{-1, 0} }) {
         int neighborX = currentX + dx;
         int neighborY = currentY + dy;
-        if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && !visited[neighborY][neighborX] && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
-          visited[neighborY][neighborX] = true;
+        if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && visited[neighborY][neighborX] != stamp && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
+          visited[neighborY][neighborX] = stamp;
           q.push({ neighborX, neighborY });
         }
       }
