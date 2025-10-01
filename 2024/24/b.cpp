@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ranges>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
@@ -38,7 +39,8 @@ int main() {
   ds.resize(as.size());
   cs[1] = bs[0]; // Initialize first carry signal
 
-  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const string in1, const string in2) {
+  auto gateSwap = [&gates, &as, &bs, &cs, &ds](std::string_view in1_sv, std::string_view in2_sv) {
+    std::string in1(in1_sv), in2(in2_sv); // intentional copies
     swap(gates[in2], gates[in1]);
     for (auto* vec : {&as, &bs, &cs, &ds}) {
       for (auto& output : *vec) {
