@@ -16,7 +16,7 @@ int main() {
   int startX = 0;
   int startY = 0;
 
-  for (string line; getline(inputFile, line); map.emplace_back(std::move(line))) {
+  for (string line; getline(inputFile, line); map.push_back(std::move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
       startX = (int)pos; startY = (int)map.size();
     }
@@ -47,7 +47,7 @@ int main() {
       int cid = id(x,y);
       if (!seen[cid]) {
         seen[cid] = true;
-        candidates.push_back({x, y, direction});
+        candidates.emplace_back(x, y, direction);
       }
     }
   }

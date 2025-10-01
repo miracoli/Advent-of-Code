@@ -18,7 +18,7 @@ int main() {
   int x = 0;
   int y = 0;
   
-  for (string line; getline(inputFile, line); map.push_back(line)) {
+  for (string line; getline(inputFile, line); map.push_back(std::move(line))) {
     if (auto pos = line.find('^'); pos != string::npos) {
       x = static_cast<int>(pos);
       y = static_cast<int>(map.size());

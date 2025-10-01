@@ -20,7 +20,7 @@ int main() {
   vector<string> grid;
   pair<int, int> pos;
     
-  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line); grid.push_back(std::move(line))) {
     for (int col = 0; col < line.size(); ++col) {
       if (line[col] == 'S') {
         pos = {grid.size() , col};
@@ -35,7 +35,7 @@ int main() {
   auto encode = [&grid](pair<int, int> cell) { return cell.first * grid[0].size() + cell.second; };
 
   while (grid[pos.first][pos.second] != 'E') {
-    path.emplace_back(pos);
+    path.push_back(pos);
     locIndex[ encode(pos) ] = idx++;
         
     for (int d : {direction, (direction + 1) & 3, (direction + 3) & 3}) {
@@ -48,7 +48,7 @@ int main() {
       }
     }
   }
-  path.emplace_back(pos); // add end
+  path.push_back(pos); // add end
   locIndex[ encode(pos) ] = idx;
 
   long long validCheats = 0;

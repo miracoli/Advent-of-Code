@@ -27,7 +27,7 @@ int main() {
   vector<string> grid;
   pair<int, int> robot;
   int gpsSum = 0;
-  for (string line; getline(input, line) && !line.empty(); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line) && !line.empty(); grid.push_back(std::move(line))) {
     for (int x = 0; x < line.size(); ++x) {
       if (line[x] == '@') {
         robot = {x, static_cast<int>(grid.size())};
