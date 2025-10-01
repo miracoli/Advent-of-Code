@@ -38,7 +38,7 @@ int main() {
   ds.resize(as.size());
   cs[1] = bs[0]; // Initialize first carry signal
 
-  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const string& in1, const string& in2) {
+  auto gateSwap = [&gates, &as, &bs, &cs, &ds](const string in1, const string in2) {
     swap(gates[in2], gates[in1]);
     for (auto* vec : {&as, &bs, &cs, &ds}) {
       for (auto& output : *vec) {
