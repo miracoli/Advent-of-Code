@@ -65,7 +65,7 @@ int main() {
   auto gate = gates.at("z00");
   string& in1 = get<1>(gate), &in2 = get<2>(gate);
   if (get<0>(gate) != "XOR" || !((in1 == "x00" && in2 == "y00") || (in1 == "y00" && in2 == "x00"))) {
-    wrong.push_back("z00");
+    wrong.emplace_back("z00");
   }
 
   for (int i = 1; i < as.size(); ++i) {

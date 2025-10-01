@@ -23,7 +23,7 @@ int main() {
   pair<uint_fast16_t, uint_fast16_t> start;
   pair<uint_fast16_t, uint_fast16_t> end;
 
-  for (string line; getline(input, line); grid.emplace_back(std::move(line))) {
+  for (string line; getline(input, line); grid.push_back(std::move(line))) {
     for (uint_fast8_t col = 0; col < line.size(); ++col) {
       if (line[col] == 'S') {
         start = {grid.size(), col};

@@ -36,12 +36,12 @@ int main() {
   getline(input, line);
   stringstream ss(line);
   for (string token; getline(ss, token, ',') >> ws; ) {
-    patterns.emplace_back(std::move(token));
+    patterns.push_back(std::move(token));
   }
 
   while (getline(input, line)) {
     if (!line.empty()) {
-      designs.emplace_back(std::move(line));
+      designs.push_back(std::move(line));
     }
   }
   
