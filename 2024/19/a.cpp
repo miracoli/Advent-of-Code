@@ -3,20 +3,24 @@
 #include <unordered_map>
 #include <sstream>
 #include <string_view>
+#include <string>
 #include <vector>
+#include <array>
+#include <algorithm>
+#include <functional>
 using namespace std;
 
 unordered_map<string_view, bool> memo;
 vector<string> patterns;
+array<vector<string>, 256> buckets;
 
 bool canFormDesign(string_view design) {
-  if (design.empty()) {
-    return true;
-  }
-  if (auto it = memo.find(design); it != memo.end()) {
-    return it->second;
-  }
-  for (const auto &pattern : patterns) {
+  if (design.empty()) return true;
+  if (auto it = memo.find(design); it != memo.end()) return it->second;
+
+  const auto& cand = buckets[design[0]];
+
+  for (const auto &pattern : cand) {
     if (design.starts_with(pattern) && canFormDesign(design.substr(pattern.size()))) {
       return memo[design] = true;
     }
@@ -31,14 +35,16 @@ int main() {
     return 1;
   }
 
-  vector<string> designs;
   string line;
   getline(input, line);
   stringstream ss(line);
   for (string token; getline(ss, token, ',') >> ws; ) {
-    patterns.push_back(std::move(token));
+    if (!token.empty()) {
+      buckets[token[0]].push_back(std::move(token));
+    }
   }
 
+  vector<string> designs;
   while (getline(input, line)) {
     if (!line.empty()) {
       designs.push_back(std::move(line));
