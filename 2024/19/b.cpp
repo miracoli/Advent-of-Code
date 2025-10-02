@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <string_view>
+#include <array>
 using namespace std;
 
 unordered_map<string_view, uint64_t> memo;
