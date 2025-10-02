@@ -4,19 +4,17 @@
 #include <unordered_map>
 #include <sstream>
 #include <string_view>
-#include <cstdint>
 using namespace std;
 
 unordered_map<string_view, uint64_t> memo;
 vector<string> patterns;
-vector<string> designs;
 
 uint64_t countWays(string_view design) {
   if (design.empty()) {
     return 1;
   }
-  if (memo.contains(design)) {
-    return memo[design];
+  if (auto it = memo.find(design); it != memo.end()) {
+    return it->second;
   }
 
   uint64_t ways = 0;
@@ -35,6 +33,7 @@ int main() {
     return 1;
   }
 
+  vector<string> designs;
   string line;
   getline(input, line);
   stringstream ss(line);
