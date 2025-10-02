@@ -45,7 +45,9 @@ int main() {
 
   vector<string> designs;
   while (getline(input, line)) {
-    designs.push_back(std::move(line));
+    if (!line.empty()) {
+      designs.push_back(std::move(line));
+    }
   }
 
   int possible = 0;
