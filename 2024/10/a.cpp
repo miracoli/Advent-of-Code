@@ -1,10 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <array>
 #include <queue>
 #include <sstream>
 
 using namespace std;
+
+static constexpr array<array<int, 2>, 4> kNeighborDeltas{{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}};
 
 int main() {
   ifstream input("input.txt");
@@ -38,7 +41,7 @@ int main() {
         ++totalScore;
         continue;
       }
-      for (auto [dx, dy] : { pair<int, int>{0, 1}, pair<int, int>{0, -1}, pair<int, int>{1, 0}, pair<int, int>{-1, 0} }) {
+      for (auto [dx, dy] : kNeighborDeltas) {
         int neighborX = currentX + dx;
         int neighborY = currentY + dy;
         if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && visited[neighborY][neighborX] != stamp && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
