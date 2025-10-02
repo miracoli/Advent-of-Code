@@ -8,6 +8,7 @@ using namespace std;
 
 unordered_map<string_view, uint64_t> memo;
 vector<string> patterns;
+array<vector<string>, 256> buckets;
 
 uint64_t countWays(string_view design) {
   if (design.empty()) {
@@ -17,8 +18,10 @@ uint64_t countWays(string_view design) {
     return it->second;
   }
 
+  const auto& cand = buckets[design[0]];
+
   uint64_t ways = 0;
-  for (const auto &pattern : patterns) {
+  for (const auto &pattern : cand) {
     if (design.starts_with(pattern)) {
       ways += countWays(design.substr(pattern.size()));
     }
@@ -38,7 +41,7 @@ int main() {
   getline(input, line);
   stringstream ss(line);
   for (string token; getline(ss, token, ',') >> ws; ) {
-    patterns.push_back(std::move(token));
+    buckets[token[0]].push_back(std::move(token));
   }
 
   while (getline(input, line)) {
