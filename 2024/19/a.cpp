@@ -4,19 +4,19 @@
 #include <sstream>
 #include <string_view>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
 unordered_map<string_view, bool> memo;
 vector<string> patterns;
-vector<string> designs;
 
 bool canFormDesign(string_view design) {
-  if (design.empty()) return true;
-  if (auto it = memo.find(design); it != memo.end()) return it->second;
-
+  if (design.empty()) {
+    return true;
+  }
+  if (auto it = memo.find(design); it != memo.end()) {
+    return it->second;
+  }
   for (const auto &pattern : patterns) {
-    if (pattern.size() > design.size()) break;
     if (design.starts_with(pattern) && canFormDesign(design.substr(pattern.size()))) {
       return memo[design] = true;
     }
@@ -31,14 +31,13 @@ int main() {
     return 1;
   }
 
+  vector<string> designs;
   string line;
   getline(input, line);
   stringstream ss(line);
   for (string token; getline(ss, token, ',') >> ws; ) {
     patterns.push_back(std::move(token));
   }
-
-  sort(patterns.begin(), patterns.end(), [](string_view a, string_view b){ return a.size() > b.size(); });
 
   while (getline(input, line)) {
     if (!line.empty()) {
