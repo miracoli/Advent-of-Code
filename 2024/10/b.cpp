@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -5,6 +6,8 @@
 #include <string>
 
 using namespace std;
+
+static constexpr std::array<std::array<int, 2>, 4> kCardinalOffsets{{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}};
 
 int main() {
   ifstream input("input.txt");
@@ -43,7 +46,7 @@ int main() {
         continue;
     }
 
-    for (auto [dx, dy] : { pair<int, int>{0, 1}, pair<int, int>{0, -1}, pair<int, int>{1, 0}, pair<int, int>{-1, 0} }) {
+    for (const auto& [dx, dy] : kCardinalOffsets) {
       int neighborX = currentX + dx;
       int neighborY = currentY + dy;
       if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows && grid[neighborY][neighborX] == grid[currentY][currentX] + 1) {
