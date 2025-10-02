@@ -17,18 +17,21 @@ bool canFormDesign(string_view design) {
     return true;
   }
 
-  auto [it, inserted] = memo.try_emplace(string(design), false);
+  string key(design);
+  auto [it, inserted] = memo.try_emplace(key, false);
   if (!inserted) return it->second;
 
+  bool can_form = false;
   for (const auto &pattern : patterns) {
     if (pattern.size() > design.size()) continue;
     if (design.starts_with(pattern) && canFormDesign(design.substr(pattern.size()))) {
-      it->second = true;
-      return true;
+      can_form = true;
+      break;
     }
   }
 
-  return false;
+  memo[key] = can_form;
+  return can_form;
 }
 
 int main() {
