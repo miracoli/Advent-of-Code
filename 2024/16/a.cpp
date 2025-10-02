@@ -11,6 +11,7 @@
 using namespace std;
 
 constexpr array<array<int, 2>, 4> directions{{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
+constexpr std::array<uint_fast8_t, 2> turnOffsets{1, 3};
 
 int main() {
   ifstream input("input.txt");
@@ -52,7 +53,8 @@ int main() {
       pq.emplace(cost + 1, newX, newY, direction);
     }
 
-    for (uint_fast8_t nd : {(direction + 1) & 3, (direction + 3) & 3}) {
+    for (uint_fast8_t offset : turnOffsets) {
+      auto nd = (direction + offset) & 3;
       auto& turnedVisited = visited[(y * cols + x) * 4 + nd];
       if (cost + 1000 < turnedVisited) {
         turnedVisited = cost + 1000;
