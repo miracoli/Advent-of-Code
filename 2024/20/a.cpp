@@ -8,6 +8,7 @@
 using namespace std;
 
 constexpr array<array<int, 2>, 4> directions = {{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}};
+constexpr array<int, 3> turnOffsets{0, 1, 3};
 constexpr int maximumCheatDistance = 2;
 constexpr int savingsWanted = 100;
 
@@ -38,7 +39,8 @@ int main() {
     path.push_back(pos);
     locIndex[ encode(pos) ] = idx++;
         
-    for (int d : {direction, (direction + 1) & 3, (direction + 3) & 3}) {
+    for (int offset : turnOffsets) {
+      int d = (direction + offset) & 3;
       int nx = pos.first + directions[d][0];
       int ny = pos.second + directions[d][1];
       if (nx >= 0 && nx < grid.size() && ny >= 0 && ny < grid[0].size() && grid[nx][ny] != '#') {
