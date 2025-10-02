@@ -12,6 +12,7 @@
 using namespace std;
 
 constexpr array<int_fast8_t, 4> dx{1, 0, -1, 0};
+constexpr array<uint_fast8_t, 2> turnOffsets{1, 3};
 
 int main() {
   ifstream input("input.txt");
@@ -61,7 +62,8 @@ int main() {
       }
     }
 
-    for (uint_fast8_t newDir : {(dir + 1) & 3, (dir + 3) & 3}) {
+    for (uint_fast8_t offset : turnOffsets) {
+      uint_fast8_t newDir = (dir + offset) & 3;
       if (cost + 1000 < visited[r][c][newDir]) {
         visited[r][c][newDir] = cost + 1000;
         pq.emplace(cost + 1000, r, c, newDir);
