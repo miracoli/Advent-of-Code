@@ -11,7 +11,6 @@
 using namespace std;
 
 unordered_map<string_view, bool> memo;
-vector<string> patterns;
 array<vector<string>, 256> buckets;
 
 bool canFormDesign(string_view design) {
@@ -46,9 +45,7 @@ int main() {
 
   vector<string> designs;
   while (getline(input, line)) {
-    if (!line.empty()) {
-      designs.push_back(std::move(line));
-    }
+    designs.push_back(std::move(line));
   }
 
   int possible = 0;
