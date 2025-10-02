@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -6,6 +7,8 @@
 #include <string>
 
 using namespace std;
+
+static constexpr std::array<int, 2> dirFactors{-1, 2};
 
 int main() {
     ifstream inputFile("input.txt");
@@ -33,7 +36,7 @@ int main() {
             for (size_t j = i + 1; j < positions.size(); ++j) {
                 int dx = positions[j].first - positions[i].first;
                 int dy = positions[j].second - positions[i].second;
-                 for (int dir : {-1, 2}) {
+                for (int dir : dirFactors) {
                     pair<int, int> p = { positions[i].first + dir * dx, positions[i].second + dir * dy };
                     if (p.first >= 0 && p.second >= 0 && p.first < cols && p.second < rows) {
                         antinodes.insert(p);
