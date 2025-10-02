@@ -3,35 +3,25 @@
 #include <unordered_map>
 #include <sstream>
 #include <string_view>
-#include <string>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-unordered_map<string, bool> memo;
+unordered_map<string_view, bool> memo;
 vector<string> patterns;
+vector<string> designs;
 
 bool canFormDesign(string_view design) {
-  if (design.empty()) {
-    return true;
-  }
+  if (design.empty()) return true;
+  if (auto it = memo.find(design); it != memo.end()) return it->second;
 
-  string key(design);
-  auto [it, inserted] = memo.try_emplace(key, false);
-  if (!inserted) return it->second;
-
-  bool can_form = false;
   for (const auto &pattern : patterns) {
-    if (pattern.size() > design.size()) continue;
+    if (pattern.size() > design.size()) break;
     if (design.starts_with(pattern) && canFormDesign(design.substr(pattern.size()))) {
-      can_form = true;
-      break;
+      return memo[design] = true;
     }
   }
-
-  memo[key] = can_form;
-  return can_form;
+  return memo[design] = false;
 }
 
 int main() {
@@ -42,19 +32,23 @@ int main() {
   }
 
   string line;
-
   getline(input, line);
   stringstream ss(line);
   for (string token; getline(ss, token, ',') >> ws; ) {
     patterns.push_back(std::move(token));
   }
 
-  sort(patterns.begin(), patterns.end(),
-       [](const string &a, const string &b) { return a.size() > b.size(); });
+  sort(patterns.begin(), patterns.end(), [](string_view a, string_view b){ return a.size() > b.size(); });
+
+  while (getline(input, line)) {
+    if (!line.empty()) {
+      designs.push_back(std::move(line));
+    }
+  }
 
   int possible = 0;
-  while (getline(input, line)) {
-    if (!line.empty() && canFormDesign(line)) {
+  for (const auto &designStr : designs) {
+    if (canFormDesign(designStr)) {
       ++possible;
     }
   }
