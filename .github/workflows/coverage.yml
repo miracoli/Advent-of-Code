@@ -1,0 +1,106 @@
+name: C++ Coverage (gcov/lcov)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      GITCRYPT_KEY_B64:
+        required: false
+    outputs:
+      coverage-generated:
+        description: Whether a coverage artifact was produced.
+        value: ${{ jobs.coverage.outputs.coverage-generated }}
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
+      COVERAGE_COMPILER_LABEL: gcov
+    outputs:
+      coverage-generated: ${{ steps.coverage-metadata.outputs.coverage-generated }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Determine coverage prerequisites
+        id: coverage-metadata
+        run: |
+          if [[ -z "$GITCRYPT_KEY_B64" ]]; then
+            echo "coverage-generated=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Coverage::Skipping coverage because GITCRYPT_KEY_B64 is not available."
+          else
+            echo "coverage-generated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+
+      - name: Install dependencies
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-crypt g++-14 lcov
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+
+      - name: Unlock encrypted inputs
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          echo "$GITCRYPT_KEY_B64" | base64 --decode > gitcrypt.key
+          git-crypt unlock gitcrypt.key
+
+      - name: Compile solutions with coverage flags
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          set -euo pipefail
+          cxx=$(command -v g++-14 || command -v g++)
+          label="$COVERAGE_COMPILER_LABEL"
+          while IFS= read -r cpp; do
+            dir=$(dirname "$cpp")
+            base=$(basename "$cpp" .cpp)
+            out_dir="build/$label/$dir"
+            mkdir -p "$out_dir"
+            "$cxx" -std=c++23 -O0 -g --coverage "$cpp" -o "$out_dir/$base"
+          done < <(find 2023 2024 -type f \( -name 'a.cpp' -o -name 'b.cpp' \))
+
+      - name: Run solution tests
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        env:
+          COMPILER: ${{ env.COVERAGE_COMPILER_LABEL }}
+        run: ./tests/run_solutions.sh
+
+      - name: Generate lcov report
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p coverage
+          lcov --capture --directory build/$COVERAGE_COMPILER_LABEL --base-directory . --rc lcov_branch_coverage=1 --output-file coverage/lcov.info
+          lcov --remove coverage/lcov.info '/usr/*' '*/tests/*' --output-file coverage/lcov.info
+          lcov --list coverage/lcov.info
+
+      - name: Generate gcov reports (optional)
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p coverage/gcov
+          cxx_gcov=$(command -v gcov-14 || command -v gcov)
+          find 2023 2024 -type f \( -name 'a.cpp' -o -name 'b.cpp' \) -print0 | \
+            while IFS= read -r -d '' cpp; do
+              build_dir="build/$COVERAGE_COMPILER_LABEL/$(dirname "$cpp")"
+              (cd coverage/gcov && "$cxx_gcov" --preserve-paths --relative-only -pb -o "../../$build_dir" "../../$cpp" >/dev/null)
+            done
+
+      - name: Upload coverage artifact
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov-report
+          path: |
+            coverage/lcov.info
+            coverage/gcov
+          if-no-files-found: error
