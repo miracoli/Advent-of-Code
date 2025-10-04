@@ -21,8 +21,14 @@ jobs:
           else
             echo "has-token=false" >> "$GITHUB_OUTPUT"
           fi
-  analyze:
+  coverage:
     needs: secret-check
+    if: ${{ needs.secret-check.outputs.has-token == 'true' }}
+    uses: ./.github/workflows/coverage.yml
+    secrets: inherit
+
+  analyze:
+    needs: [secret-check, coverage]
     if: ${{ needs.secret-check.outputs.has-token == 'true' }}
     name: SonarCloud
     runs-on: ubuntu-24.04
@@ -33,6 +39,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Download coverage artifact
+        if: needs.coverage.outputs.coverage-generated == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: lcov-report
+          path: coverage
+
+      - name: Coverage artifact not available
+        if: needs.coverage.outputs.coverage-generated != 'true'
+        run: echo "::notice title=Coverage::No coverage artifact was produced for this run."
 
       - name: Install g++-14
         run: |
