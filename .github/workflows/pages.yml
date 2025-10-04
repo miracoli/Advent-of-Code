@@ -2,7 +2,8 @@ name: Deploy static content to Pages
 
 on:
   workflow_run:
-    workflows: ["Build C++ solutions"]
+    workflows:
+      - "Build C++ solutions"
     types:
       - completed
 
