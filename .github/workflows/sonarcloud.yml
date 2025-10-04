@@ -79,7 +79,6 @@ jobs:
 
       - name: Build with build-wrapper
         run: |
-          mkdir -p build
           ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output bash -c '
             set -euo pipefail
             cxx=$(command -v g++-14 || command -v g++)
@@ -88,13 +87,13 @@ jobs:
               exit 1
             fi
             "$cxx" --version
-            while IFS= read -r cpp; do
-              dir=$(dirname "$cpp")
-              base=$(basename "$cpp" .cpp)
-              out_dir="build/$dir"
-              mkdir -p "$out_dir"
-              "$cxx" -std=c++23 -O2 "$cpp" -o "$out_dir/$base"
-            done < <(find 2023 2024 -type f \( -name "a.cpp" -o -name "b.cpp" \))
+            make clean
+            make \
+              CXX="$cxx" \
+              BUILD_DIR="build" \
+              CXXFLAGS="-std=c++23 -O2" \
+              DIRS="2023 2024" \
+              -j"$(nproc)"
           '
 
       - name: SonarCloud Scan

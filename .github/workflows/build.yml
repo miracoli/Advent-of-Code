@@ -65,13 +65,13 @@ jobs:
         if: matrix.compiler != 'cl'
         run: |
           set -e
-          for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
-            dir=$(dirname "$cpp")
-            base=$(basename "$cpp" .cpp)
-            out_dir="build/${{ matrix.compiler }}/$dir"
-            mkdir -p "$out_dir"
-            ${{ matrix.compiler }} -std=c++23 -Werror -O2 "$cpp" -o "$out_dir/$base"
-          done
+          make clean
+          make \
+            CXX="${{ matrix.compiler }}" \
+            BUILD_DIR="build/${{ matrix.compiler }}" \
+            CXXFLAGS="-std=c++23 -Werror -O2" \
+            DIRS="2023 2024" \
+            -j"$(nproc)"
       - name: Run all solutions
         if: runner.os != 'Windows'
         run: |

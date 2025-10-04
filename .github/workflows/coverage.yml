@@ -61,13 +61,13 @@ jobs:
           set -euo pipefail
           cxx=$(command -v g++-14 || command -v g++)
           label="$COVERAGE_COMPILER_LABEL"
-          while IFS= read -r cpp; do
-            dir=$(dirname "$cpp")
-            base=$(basename "$cpp" .cpp)
-            out_dir="build/$label/$dir"
-            mkdir -p "$out_dir"
-            "$cxx" -std=c++23 -O0 -g --coverage "$cpp" -o "$out_dir/$base"
-          done < <(find 2023 2024 -type f \( -name 'a.cpp' -o -name 'b.cpp' \))
+          make clean BUILD_DIR="build/$label"
+          make \
+            CXX="$cxx" \
+            BUILD_DIR="build/$label" \
+            CXXFLAGS="-std=c++23 -O0 -g --coverage" \
+            DIRS="2023 2024" \
+            -j"$(nproc)"
 
       - name: Run solution tests
         if: steps.coverage-metadata.outputs.coverage-generated == 'true'

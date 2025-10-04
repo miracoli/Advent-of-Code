@@ -16,3 +16,5 @@ The automated build runs on GitHub Actions using GCC, Clang and MSVC.
 
 Run `make` from the repository root to compile every C++ solution. The resulting executables are placed in the corresponding subdirectories under `build/`. You can target specific Advent of Code years by passing `DIRS="2023 2024"` (or any other subset) to the command.
 
+For faster local builds, invoke `make -j$(nproc)` to compile the solutions in parallel.
+
