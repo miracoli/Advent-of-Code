@@ -16,7 +16,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    secrets: inherit
+
   deploy:
+    needs: coverage
     env:
       GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
     environment:
@@ -34,6 +39,12 @@ jobs:
           name: g++
           path: build/g++
           run-id: ${{ github.event.workflow_run.id }}
+      - name: Download coverage artifact
+        if: needs.coverage.outputs.coverage-generated == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: lcov-report
+          path: coverage
       - name: Install git-crypt
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
@@ -45,11 +56,29 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y hyperfine jq
       - name: Generate index.html
+        env:
+          COVERAGE_GENERATED: ${{ needs.coverage.outputs.coverage-generated }}
         run: |
           mkdir -p site
           cat <<'EOF' > site/index.html
           <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>
           EOF
+          if [ "${COVERAGE_GENERATED}" = "true" ] && [ -d coverage ]; then
+            {
+              echo '<h2>Coverage Reports</h2>'
+              echo '<ul>'
+              if [ -f coverage/lcov.info ]; then
+                echo '<li><a href="coverage/lcov.info">lcov.info</a></li>'
+              fi
+              if [ -d coverage/html ]; then
+                echo '<li><a href="coverage/html/index.html">HTML coverage report</a></li>'
+              fi
+              if [ -d coverage/gcov ]; then
+                echo '<li><a href="coverage/gcov/">gcov files</a></li>'
+              fi
+              echo '</ul>'
+            } >> site/index.html
+          fi
           mapfile -t years < <(find . -mindepth 1 -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]' -printf '%f\n' | sort)
           if [ ${#years[@]} -eq 0 ]; then
             echo '<p>No solution data available.</p>' >> site/index.html
@@ -137,6 +166,19 @@ jobs:
             } >> site/index.html
           done
           echo '</body></html>' >> site/index.html
+      - name: Copy coverage assets into site
+        if: needs.coverage.outputs.coverage-generated == 'true'
+        run: |
+          mkdir -p site/coverage
+          if [ -f coverage/lcov.info ]; then
+            cp coverage/lcov.info site/coverage/
+          fi
+          if [ -d coverage/html ]; then
+            cp -r coverage/html site/coverage/html
+          fi
+          if [ -d coverage/gcov ]; then
+            cp -r coverage/gcov site/coverage/gcov
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
