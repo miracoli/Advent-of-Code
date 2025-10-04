@@ -1,4 +1,4 @@
-name: Build C++ solutions
+name: Build Cpp Solutions
 
 on:
   push:
