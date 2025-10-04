@@ -8,6 +8,7 @@ on:
       - completed
 
 permissions:
+  actions: write          # <-- add this
   contents: read
   pages: write
   id-token: write
