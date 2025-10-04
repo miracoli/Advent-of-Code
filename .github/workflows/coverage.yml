@@ -82,7 +82,7 @@ jobs:
           mkdir -p coverage
           gcov_tool=$(command -v gcov-14 || command -v gcov)
           lcov --gcov-tool "$gcov_tool" --capture --directory build/$COVERAGE_COMPILER_LABEL --no-external --base-directory . --rc lcov_branch_coverage=1 --output-file coverage/lcov.info
-          lcov --gcov-tool "$gcov_tool" --remove coverage/lcov.info '*/tests/*' --output-file coverage/lcov.info
+          lcov --gcov-tool "$gcov_tool" --remove coverage/lcov.info --output-file coverage/lcov.info
           lcov --list coverage/lcov.info --rc branch_coverage=1
 
       - name: Generate gcov reports (optional)
