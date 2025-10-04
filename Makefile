@@ -1,6 +1,6 @@
 SHELL := bash
 CXX ?= g++
-CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -MMD -MP
+CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -MMD -MP -include cstdint
 LDFLAGS ?=
 BUILD_DIR ?= build
 
