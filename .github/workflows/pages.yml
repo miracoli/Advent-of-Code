@@ -1,9 +1,10 @@
 name: Deploy static content to Pages
 
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build C++ solutions"]
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -27,6 +28,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Download g++ artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: g++
+          path: build/g++
+          run-id: ${{ github.event.workflow_run.id }}
       - name: Install git-crypt
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
@@ -36,8 +43,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-14 hyperfine jq
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+          sudo apt-get install -y hyperfine jq
       - name: Generate index.html
         run: |
           mkdir -p site
@@ -62,21 +68,25 @@ jobs:
               b_lines=""
               a_time=""
               b_time=""
+              binary_a="build/g++/${dir}/a"
+              binary_b="build/g++/${dir}/b"
               if [ -f "$dir/a.cpp" ]; then
                 a_lines=$(wc -l < "$dir/a.cpp" | xargs)
-                (cd "$dir" && g++ -std=c++23 -O2 a.cpp -o a)
-                (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./a --export-json /tmp/a.json > /dev/null)
-                a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
-                a_time=$(printf "%.2f" "$a_time_raw")
-                a_times+=("$a_time_raw")
+                if [ -x "$binary_a" ]; then
+                  hyperfine -N -u microsecond -w 50 -r 50 "./$binary_a" --export-json /tmp/a.json > /dev/null
+                  a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
+                  a_time=$(printf "%.2f" "$a_time_raw")
+                  a_times+=("$a_time_raw")
+                fi
               fi
               if [ -f "$dir/b.cpp" ]; then
                 b_lines=$(wc -l < "$dir/b.cpp" | xargs)
-                (cd "$dir" && g++ -std=c++23 -O2 b.cpp -o b)
-                (cd "$dir" && hyperfine -N -u microsecond -w 50 -r 50 ./b --export-json /tmp/b.json > /dev/null)
-                b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
-                b_time=$(printf "%.2f" "$b_time_raw")
-                b_times+=("$b_time_raw")
+                if [ -x "$binary_b" ]; then
+                  hyperfine -N -u microsecond -w 50 -r 50 "./$binary_b" --export-json /tmp/b.json > /dev/null
+                  b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
+                  b_time=$(printf "%.2f" "$b_time_raw")
+                  b_times+=("$b_time_raw")
+                fi
               fi
               echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
             done
