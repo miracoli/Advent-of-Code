@@ -25,6 +25,9 @@ jobs:
     needs: secret-check
     if: ${{ needs.secret-check.outputs.has-token == 'true' }}
     uses: ./.github/workflows/coverage.yml
+    permissions:
+      actions: write
+      contents: read
     secrets: inherit
 
   analyze:
