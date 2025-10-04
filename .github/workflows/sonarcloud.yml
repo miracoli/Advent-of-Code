@@ -33,6 +33,7 @@ jobs:
     name: SonarCloud
     runs-on: ubuntu-24.04
     permissions:
+      actions: write
       contents: read
       pull-requests: read
     steps:
