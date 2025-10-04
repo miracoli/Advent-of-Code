@@ -2,7 +2,7 @@ name: Deploy static content to Pages
 
 on:
   workflow_run:
-    workflows: ["Build C++ solutions"]
+    workflows: ["build.yml"]
     types:
       - completed
 
