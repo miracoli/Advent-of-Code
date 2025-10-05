@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -29,7 +30,7 @@ jobs:
         if: runner.os != 'Windows'
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && env.GITCRYPT_KEY_B64 != ''
         run: |
           echo "$GITCRYPT_KEY_B64" | base64 --decode > gitcrypt.key
           git-crypt unlock gitcrypt.key
@@ -77,7 +78,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gpp-build
-          path: build/g++/**
+          path: build/g++
       - name: Run all solutions
         if: runner.os != 'Windows'
         run: |

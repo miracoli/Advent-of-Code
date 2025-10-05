@@ -8,7 +8,7 @@ on:
       - completed
 
 permissions:
-  actions: write          # <-- add this
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -30,17 +30,42 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      actions: read
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: List artifacts for triggering run (debug)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runId = ${{ github.event.workflow_run.id }};
+            const { data } = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+              per_page: 100,
+            });
+            core.info(`Artifacts on run ${runId}: ` + data.artifacts.map(a => `${a.name}(expired=${a.expired})`).join(", "));
       - name: Download g++ artifact
         uses: actions/download-artifact@v4
         with:
           name: gpp-build
-          path: build/g++
+          path: .
           run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify expected binaries exist
+        run: |
+          set -euo pipefail
+          test -d build/g++ || { echo "::error::Missing build/g++ after download"; exit 1; }
+          ls -l build/g++/2024/01/a || { echo "::error::Missing example binary a"; exit 1; }
+          ls -l build/g++/2024/01/b || { echo "::error::Missing example binary b"; exit 1; }
       - name: Download coverage artifact
         if: needs.coverage.outputs.coverage-generated == 'true'
         uses: actions/download-artifact@v4
@@ -49,6 +74,7 @@ jobs:
       - name: Install git-crypt
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
+        if: env.GITCRYPT_KEY_B64 != ''
         run: |
           echo "$GITCRYPT_KEY_B64" | base64 --decode > gitcrypt.key
           git-crypt unlock gitcrypt.key
