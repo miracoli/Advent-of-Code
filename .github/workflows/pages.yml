@@ -70,16 +70,17 @@ jobs:
           test -d build/g++ || { echo "::error::Missing build/g++ after download"; exit 1; }
           ls -l build/g++/2024/01/a || { echo "::error::Missing example binary a"; exit 1; }
           ls -l build/g++/2024/01/b || { echo "::error::Missing example binary b"; exit 1; }
+      - name: Restore executable bits for downloaded binaries
+        run: |
+          chmod -R u+x build/g++ || true
       - name: Download coverage artifact
         if: needs.coverage.outputs.coverage-generated == 'true'
         uses: actions/download-artifact@v4
         with:
           name: lcov-report
+          run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: coverage
-      - name: Restore executable bits for downloaded binaries
-        run: |
-          chmod -R u+x build/g++ || true
       - name: Install git-crypt
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock encrypted inputs
@@ -91,6 +92,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y hyperfine jq
+      - name: Inspect a few binaries (debug)
+        run: |
+          set -x
+          for p in build/g++/2023/01/a build/g++/2023/01/b build/g++/2024/01/a build/g++/2024/01/b; do
+            if [ -e "$p" ]; then
+              echo "== $p =="
+              ls -l "$p" || true
+              file "$p" || true
+              ldd "$p" || true
+            fi
+          done
       - name: Generate index.html
         env:
           COVERAGE_GENERATED: ${{ needs.coverage.outputs.coverage-generated }}
@@ -145,19 +157,23 @@ jobs:
               if [ -f "$dir/a.cpp" ]; then
                 a_lines=$(wc -l < "$dir/a.cpp" | xargs)
                 if [ -x "$binary_a" ]; then
-                  hyperfine -N -u microsecond -w 50 -r 50 "cd \"$dir\" && \"$binary_a_abs\"" --export-json /tmp/a.json > /dev/null
-                  a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
-                  a_time=$(printf "%.2f" "$a_time_raw")
-                  a_times+=("$a_time_raw")
+                  if hyperfine -N -u microsecond -w 50 -r 50 "cd \"$dir\" && \"$binary_a_abs\"" \
+                       --export-json /tmp/a.json > /dev/null 2>/dev/null; then
+                    a_time_raw=$(jq '.results[0].min * 1000' /tmp/a.json)
+                    a_time=$(printf "%.2f" "$a_time_raw")
+                    a_times+=("$a_time_raw")
+                  fi
                 fi
               fi
               if [ -f "$dir/b.cpp" ]; then
                 b_lines=$(wc -l < "$dir/b.cpp" | xargs)
                 if [ -x "$binary_b" ]; then
-                  hyperfine -N -u microsecond -w 50 -r 50 "cd \"$dir\" && \"$binary_b_abs\"" --export-json /tmp/b.json > /dev/null
-                  b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
-                  b_time=$(printf "%.2f" "$b_time_raw")
-                  b_times+=("$b_time_raw")
+                  if hyperfine -N -u microsecond -w 50 -r 50 "cd \"$dir\" && \"$binary_b_abs\"" \
+                       --export-json /tmp/b.json > /dev/null 2>/dev/null; then
+                    b_time_raw=$(jq '.results[0].min * 1000' /tmp/b.json)
+                    b_time=$(printf "%.2f" "$b_time_raw")
+                    b_times+=("$b_time_raw")
+                  fi
                 fi
               fi
               echo "<tr><td>$day</td><td>${a_lines}</td><td>${b_lines}</td><td>${a_time}</td><td>${b_time}</td></tr>" >> site/index.html
