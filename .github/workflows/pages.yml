@@ -97,6 +97,11 @@ jobs:
           if [ "${COVERAGE_GENERATED}" = "true" ] && [ -d coverage ]; then
             {
               echo '<h2>Coverage Reports</h2>'
+              if [ -d coverage/html ]; then
+                echo '<p><a href="coverage/html/index.html">View coverage results</a></p>'
+              elif [ -d coverage ]; then
+                echo '<p><a href="coverage/">View coverage results</a></p>'
+              fi
               echo '<ul>'
               if [ -f coverage/lcov.info ]; then
                 echo '<li><a href="coverage/lcov.info">lcov.info</a></li>'
