@@ -78,8 +78,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lcov-report
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           path: coverage
       - name: Install git-crypt
         run: sudo apt-get update && sudo apt-get install -y git-crypt
