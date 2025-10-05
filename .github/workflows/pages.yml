@@ -57,9 +57,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: gpp-build
-          path: .
+          path: build/g++
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: List downloaded files (debug)
+        run: |
+          echo "Tree under build/g++:"
+          find build/g++ -maxdepth 3 -type f -printf "%p\n" | sort || true
       - name: Verify expected binaries exist
         run: |
           set -euo pipefail
