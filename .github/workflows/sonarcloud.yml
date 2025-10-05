@@ -15,36 +15,44 @@ jobs:
     secrets: inherit
 
   analyze:
-    if: ${{ secrets.SONAR_TOKEN != '' }}
     needs: coverage
     name: SonarCloud
     runs-on: ubuntu-24.04
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     permissions:
       actions: write
       contents: read
       pull-requests: read
     steps:
+      - name: SonarCloud token not configured
+        if: env.SONAR_TOKEN == ''
+        run: echo "::notice title=SonarCloud::SONAR_TOKEN secret is not configured. Skipping analysis."
+
       - uses: actions/checkout@v4
+        if: env.SONAR_TOKEN != ''
         with:
           fetch-depth: 0
 
       - name: Download coverage artifact
-        if: needs.coverage.outputs.coverage-generated == 'true'
+        if: needs.coverage.outputs.coverage-generated == 'true' && env.SONAR_TOKEN != ''
         uses: actions/download-artifact@v4
         with:
           name: lcov-report
           path: coverage
 
       - name: Coverage artifact not available
-        if: needs.coverage.outputs.coverage-generated != 'true'
+        if: needs.coverage.outputs.coverage-generated != 'true' && env.SONAR_TOKEN != ''
         run: echo "::notice title=Coverage::No coverage artifact was produced for this run."
 
       - name: Install g++-14
+        if: env.SONAR_TOKEN != ''
         run: |
           sudo apt-get update
           sudo apt-get install -y g++-14
-      
+
       - name: Cache SonarCloud packages
+        if: env.SONAR_TOKEN != ''
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -52,6 +60,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Cache SonarCloud build-wrapper
+        if: env.SONAR_TOKEN != ''
         id: build-wrapper-cache
         uses: actions/cache@v4
         with:
@@ -60,12 +69,13 @@ jobs:
           restore-keys: ${{ runner.os }}-build-wrapper
 
       - name: Download build-wrapper
-        if: steps.build-wrapper-cache.outputs.cache-hit != 'true'
+        if: steps.build-wrapper-cache.outputs.cache-hit != 'true' && env.SONAR_TOKEN != ''
         run: |
           curl -sSLo build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
           unzip -q build-wrapper-linux-x86.zip
 
       - name: Build with build-wrapper
+        if: env.SONAR_TOKEN != ''
         run: |
           ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output bash -c '
             set -euo pipefail
@@ -85,15 +95,17 @@ jobs:
           '
 
       - name: SonarCloud Scan
+        if: env.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarCloud Quality Gate
+        if: env.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         timeout-minutes: 5
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
