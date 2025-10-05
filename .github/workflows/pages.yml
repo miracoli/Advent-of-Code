@@ -75,7 +75,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lcov-report
-          run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: coverage
       - name: Restore executable bits for downloaded binaries
