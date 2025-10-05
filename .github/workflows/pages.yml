@@ -109,25 +109,10 @@ jobs:
           cat <<'EOF' > site/index.html
           <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Advent of Code Solutions</title></head><body>
           EOF
-          if [ "${COVERAGE_GENERATED}" = "true" ] && [ -d coverage ]; then
+          if [ "${COVERAGE_GENERATED}" = "true" ] && [ -d coverage/html ]; then
             {
               echo '<h2>Coverage Reports</h2>'
-              if [ -d coverage/html ]; then
-                echo '<p><a href="coverage/html/index.html">View coverage results</a></p>'
-              elif [ -d coverage ]; then
-                echo '<p><a href="coverage/">View coverage results</a></p>'
-              fi
-              echo '<ul>'
-              if [ -f coverage/lcov.info ]; then
-                echo '<li><a href="coverage/lcov.info">lcov.info</a></li>'
-              fi
-              if [ -d coverage/html ]; then
-                echo '<li><a href="coverage/html/index.html">HTML coverage report</a></li>'
-              fi
-              if [ -d coverage/gcov ]; then
-                echo '<li><a href="coverage/gcov/">gcov files</a></li>'
-              fi
-              echo '</ul>'
+              echo '<p><a href="coverage/html/index.html">View HTML coverage report</a></p>'
             } >> site/index.html
           fi
           mapfile -t years < <(find . -mindepth 1 -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]' -printf '%f\n' | sort)
@@ -226,15 +211,9 @@ jobs:
       - name: Copy coverage assets into site
         if: needs.coverage.outputs.coverage-generated == 'true'
         run: |
-          mkdir -p site/coverage
-          if [ -f coverage/lcov.info ]; then
-            cp coverage/lcov.info site/coverage/
-          fi
           if [ -d coverage/html ]; then
+            mkdir -p site/coverage
             cp -r coverage/html site/coverage/html
-          fi
-          if [ -d coverage/gcov ]; then
-            cp -r coverage/gcov site/coverage/gcov
           fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
