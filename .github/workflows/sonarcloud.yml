@@ -7,23 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  secret-check:
-    runs-on: ubuntu-latest
-    outputs:
-      has-token: ${{ steps.detect.outputs.has-token }}
-    steps:
-      - id: detect
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          if [ -n "$SONAR_TOKEN" ]; then
-            echo "has-token=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has-token=false" >> "$GITHUB_OUTPUT"
-          fi
   coverage:
-    needs: secret-check
-    if: ${{ needs.secret-check.outputs.has-token == 'true' }}
     uses: ./.github/workflows/coverage.yml
     permissions:
       actions: write
@@ -31,8 +15,7 @@ jobs:
     secrets: inherit
 
   analyze:
-    needs: [secret-check, coverage]
-    if: ${{ needs.secret-check.outputs.has-token == 'true' }}
+    needs: coverage
     name: SonarCloud
     runs-on: ubuntu-24.04
     permissions:
@@ -113,9 +96,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
-  skip-notice:
-    needs: secret-check
-    if: ${{ needs.secret-check.outputs.has-token != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "::notice title=SonarCloud::Analysis skipped because the SONAR_TOKEN secret is not configured."
