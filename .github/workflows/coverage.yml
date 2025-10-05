@@ -75,6 +75,41 @@ jobs:
           COMPILER: ${{ env.COVERAGE_COMPILER_LABEL }}
         run: ./tests/run_solutions.sh
 
+      - name: Run all covered binaries to generate .gcda
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          set -euo pipefail
+          REPO_ROOT="${GITHUB_WORKSPACE:-$PWD}"
+          LABEL="${COVERAGE_COMPILER_LABEL:-g++}"
+
+          chmod -R u+x "build/${LABEL}" || true
+
+          while IFS= read -r -d '' exe; do
+            rel="${exe#build/${LABEL}/}"
+            src_dir="$(dirname "${rel}")"
+            base="$(basename "${exe}")"
+            abs_exe="${REPO_ROOT}/${exe}"
+
+            echo "::group::Run ${exe} (from ${src_dir})"
+            if [ -d "${src_dir}" ]; then
+              (
+                cd "${src_dir}"
+                timeout 10s "${abs_exe}" >/dev/null 2>/dev/null || true
+              )
+            else
+              echo "WARN: Source dir ${src_dir} not found for ${exe}"
+            fi
+            echo "::endgroup::"
+          done < <(find "build/${LABEL}" -type f \( -name a -o -name b \) -print0)
+
+      - name: Show .gcda counts per year (debug)
+        if: steps.coverage-metadata.outputs.coverage-generated == 'true'
+        run: |
+          for year in 2023 2024; do
+            echo -n "${year}: "
+            find "${year}" -name '*.gcda' | wc -l | xargs echo "files"
+          done
+
       - name: Generate lcov report
         if: steps.coverage-metadata.outputs.coverage-generated == 'true'
         run: |
