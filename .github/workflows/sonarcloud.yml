@@ -15,6 +15,7 @@ jobs:
     secrets: inherit
 
   analyze:
+    if: ${{ secrets.SONAR_TOKEN != '' }}
     needs: coverage
     name: SonarCloud
     runs-on: ubuntu-24.04
