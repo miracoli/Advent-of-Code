@@ -38,7 +38,7 @@ jobs:
       - name: Download g++ artifact
         uses: actions/download-artifact@v4
         with:
-          name: g++
+          name: gpp-build
           path: build/g++
           run-id: ${{ github.event.workflow_run.id }}
       - name: Download coverage artifact

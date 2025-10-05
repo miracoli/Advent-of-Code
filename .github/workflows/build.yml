@@ -76,7 +76,7 @@ jobs:
         if: matrix.compiler == 'g++' && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: g++
+          name: gpp-build
           path: build/g++/**
       - name: Run all solutions
         if: runner.os != 'Windows'
