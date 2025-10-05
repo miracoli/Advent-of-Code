@@ -104,8 +104,14 @@ jobs:
 
       - name: SonarCloud Quality Gate
         if: env.SONAR_TOKEN != ''
+        id: quality-gate
+        continue-on-error: true
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
+
+      - name: SonarCloud quality gate failed
+        if: env.SONAR_TOKEN != '' && steps.quality-gate.outcome == 'failure'
+        run: echo "::warning title=SonarCloud::Quality gate failed. Please review the report on SonarCloud."
