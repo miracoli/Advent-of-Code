@@ -70,7 +70,7 @@ jobs:
           make \
             CXX="${{ matrix.compiler }}" \
             BUILD_DIR="build/${{ matrix.compiler }}" \
-            CXXFLAGS="-std=c++23 -Werror -O2" \
+            CXXFLAGS="-std=c++23 -Werror -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
             DIRS="2023 2024" \
             -j"$(nproc)"
       - name: Upload g++ artifacts

@@ -1,6 +1,7 @@
 SHELL := bash
 CXX ?= g++
-CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -MMD -MP -include cstdint
+CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -MMD -MP -include cstdint \
+    -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
 LDFLAGS ?=
 BUILD_DIR ?= build
 
