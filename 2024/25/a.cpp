@@ -10,7 +10,7 @@ int main() {
   ifstream file("input.txt");
   if (!file) {
     cerr << "Error opening file: input.txt" << endl;
-    exit(EXIT_FAILURE);
+    return 1;
   }
 
   vector<uint32_t> locks;

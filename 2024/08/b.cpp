@@ -14,7 +14,7 @@ int main() {
     ifstream inputFile("input.txt");
     if (!inputFile) {
         cerr << "Failed to open input.txt";
-        return -1;
+        return 1;
     }
 
     map<char, vector<pair<int, int>>> antennas;
