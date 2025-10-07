@@ -12,7 +12,7 @@ int main() {
   ifstream inf{"input.txt"};
   if (!inf) {
     cerr << "Could not open file: input.txt" << endl;
-    return 2;
+    return 1;
   }
 
   for (string line; getline(inf, line) && !line.empty(););
