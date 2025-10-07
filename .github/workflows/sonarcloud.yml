@@ -89,7 +89,7 @@ jobs:
             make \
               CXX="$cxx" \
               BUILD_DIR="build" \
-              CXXFLAGS="-std=c++23 -O2" \
+              CXXFLAGS="-std=c++23 -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
               DIRS="2023 2024" \
               -j"$(nproc)"
           '
