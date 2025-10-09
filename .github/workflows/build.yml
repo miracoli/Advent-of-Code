@@ -43,11 +43,24 @@ jobs:
       - name: Install clang
         if: matrix.compiler == 'clang++'
         run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Enable compiler cache (ccache)
+        if: matrix.compiler != 'cl'
+        uses: hendrikmuhs/ccache-action@v1.2.14
+        with:
+          max-size: 2G
+          # Symlink compilers so g++, clang++ automatically go through ccache
+          create-symlink: true
       - name: Setup MSVC
         if: matrix.compiler == 'cl'
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Enable sccache (MSVC)
+        if: matrix.compiler == 'cl'
+        uses: Mozilla-Actions/sccache-action@v0.0.9
+        env:
+          SCCACHE_GHA_ENABLED: "true"
       - name: Compile all solutions (MSVC)
         if: matrix.compiler == 'cl'
+        shell: bash
         env:
           MSYS2_ARG_CONV_EXCL: '*'
         run: |
@@ -57,19 +70,25 @@ jobs:
             base=$(basename "$cpp" .cpp)
             out_dir="build/${{ matrix.compiler }}/$dir"
             mkdir -p "$out_dir"
-            cl /EHsc /std:c++latest /O2 "$cpp" /Fe"$out_dir/$base.exe"
+            sccache cl /EHsc /std:c++latest /O2 "$cpp" /Fe"$out_dir/$base.exe"
           done
+      - name: Show sccache stats
+        if: matrix.compiler == 'cl'
+        run: ${SCCACHE_PATH} --show-stats || sccache --show-stats || true
       - name: Compile all solutions
         if: matrix.compiler != 'cl'
         run: |
           set -e
           make clean
           make \
-            CXX="${{ matrix.compiler }}" \
+            CXX="ccache ${{ matrix.compiler }}" \
             BUILD_DIR="build/${{ matrix.compiler }}" \
             CXXFLAGS="-std=c++23 -Werror -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
             DIRS="2023 2024" \
             -j"$(nproc)"
+      - name: Show ccache stats
+        if: matrix.compiler != 'cl'
+        run: ccache -s || true
       - name: Upload g++ artifacts
         if: matrix.compiler == 'g++' && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
