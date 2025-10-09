@@ -25,7 +25,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install git-crypt
         if: runner.os != 'Windows'
         run: sudo apt-get update && sudo apt-get install -y git-crypt
@@ -40,9 +40,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y g++-14
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
-      - name: Install hyperfine
-        if: matrix.compiler == 'g++'
-        run: sudo apt-get update && sudo apt-get install -y hyperfine
       - name: Install clang
         if: matrix.compiler == 'clang++'
         run: sudo apt-get update && sudo apt-get install -y clang
@@ -79,21 +76,6 @@ jobs:
         with:
           name: gpp-build
           path: build/g++
-      - name: Run all solutions
-        if: runner.os != 'Windows'
-        run: |
-          set -e
-          for day in $(seq -w 1 25); do
-            dir="2024/$day"
-            if [ -f "$dir/a.cpp" ]; then
-              echo "Running $dir/a"
-              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/a > /dev/null)
-            fi
-            if [ -f "$dir/b.cpp" ]; then
-              echo "Running $dir/b"
-              (cd "$dir" && ../../build/${{ matrix.compiler }}/$dir/b > /dev/null)
-            fi
-          done
       - name: Test outputs
         if: runner.os != 'Windows'
         env:
