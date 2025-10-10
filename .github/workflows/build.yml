@@ -61,7 +61,7 @@ jobs:
         uses: Mozilla-Actions/sccache-action@v0.0.9
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build (two-phase: compile then link) [MSVC]
+      - name: "Build (two-phase: compile then link) [MSVC]"
         if: matrix.compiler == 'cl'
         shell: bash
         env:
