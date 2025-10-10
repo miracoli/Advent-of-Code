@@ -71,6 +71,7 @@ jobs:
           BDIR="build/${{ matrix.compiler }}"
           mkdir -p "$BDIR"
           mapfile -t SRCS < <(git ls-files '**/a.cpp' '**/b.cpp' 2>/dev/null || true)
+          link_exe="${VCToolsInstallDir}bin\\Host${VSCMD_ARG_HOST_ARCH}\\${VSCMD_ARG_TGT_ARCH}\\link.exe"
           for src in "${SRCS[@]}"; do
             dir=$(dirname "$src")
             base=$(basename "$src" .cpp)
@@ -79,7 +80,7 @@ jobs:
             # compile to .obj (cacheable)
             sccache cl /nologo /EHsc /std:c++latest /O2 /c "$src" /Fo"$out_dir/$base.obj"
             # link (fast)
-            link /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
+            "$link_exe" /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
           done
       - name: Show sccache stats
         if: matrix.compiler == 'cl'
