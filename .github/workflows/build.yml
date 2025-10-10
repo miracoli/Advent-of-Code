@@ -71,7 +71,8 @@ jobs:
             out_dir="build/${{ matrix.compiler }}/$dir"
             mkdir -p "$out_dir"
             sccache cl /nologo /EHsc /std:c++latest /O2 /c "$cpp" /Fo"$out_dir/$base.obj"
-            link /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
+            link_exe="${VCToolsInstallDir}bin\\Host${VSCMD_ARG_HOST_ARCH}\\${VSCMD_ARG_TGT_ARCH}\\link.exe"
+            "$link_exe" /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
           done
       - name: Show sccache stats
         if: matrix.compiler == 'cl'
