@@ -8,6 +8,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      actions: write   # required for the GHA cache backend
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -21,6 +23,7 @@ jobs:
             compiler: cl
     env:
       GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
+      SCCACHE_GHA_ENABLED: "true"   # persist cache across runs via GHA backend
     defaults:
       run:
         shell: bash
@@ -56,27 +59,34 @@ jobs:
       - name: Enable sccache (MSVC)
         if: matrix.compiler == 'cl'
         uses: Mozilla-Actions/sccache-action@v0.0.9
-        env:
-          SCCACHE_GHA_ENABLED: "true"
-      - name: Compile all solutions (MSVC)
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build (two-phase: compile then link) [MSVC]
         if: matrix.compiler == 'cl'
         shell: bash
         env:
           MSYS2_ARG_CONV_EXCL: '*'
         run: |
           set -e
-          for cpp in $(find . -type f \( -name 'a.cpp' -o -name 'b.cpp' \)); do
-            dir=$(dirname "$cpp")
-            base=$(basename "$cpp" .cpp)
-            out_dir="build/${{ matrix.compiler }}/$dir"
+          BDIR="build/${{ matrix.compiler }}"
+          mkdir -p "$BDIR"
+          mapfile -t SRCS < <(git ls-files '**/a.cpp' '**/b.cpp' 2>/dev/null || true)
+          for src in "${SRCS[@]}"; do
+            dir=$(dirname "$src")
+            base=$(basename "$src" .cpp)
+            out_dir="$BDIR/$dir"
             mkdir -p "$out_dir"
-            sccache cl /nologo /EHsc /std:c++latest /O2 /c "$cpp" /Fo"$out_dir/$base.obj"
-            link_exe="${VCToolsInstallDir}bin\\Host${VSCMD_ARG_HOST_ARCH}\\${VSCMD_ARG_TGT_ARCH}\\link.exe"
-            "$link_exe" /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
+            # compile to .obj (cacheable)
+            sccache cl /nologo /EHsc /std:c++latest /O2 /c "$src" /Fo"$out_dir/$base.obj"
+            # link (fast)
+            link /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
           done
       - name: Show sccache stats
         if: matrix.compiler == 'cl'
         run: ${SCCACHE_PATH} --show-stats || sccache --show-stats || true
+      - name: Check sccache backend
+        if: matrix.compiler == 'cl'
+        run: sccache --show-stats | findstr /R /C:"Cache location" || true
       - name: Compile all solutions
         if: matrix.compiler != 'cl'
         run: |
