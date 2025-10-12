@@ -24,6 +24,11 @@ jobs:
     env:
       GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
       SCCACHE_GHA_ENABLED: "true"   # persist cache across runs via GHA backend
+      # --- ccache tuning for persistent hits across runners ---
+      CCACHE_BASEDIR: ${{ github.workspace }}   # normalize paths
+      CCACHE_HASHDIR: "false"                   # don't hash build dir
+      CCACHE_COMPILERCHECK: "content"           # tolerate minor compiler path/version shifts
+      CCACHE_COMPRESS: "1"                      # smaller cache uploads
     defaults:
       run:
         shell: bash
@@ -53,6 +58,11 @@ jobs:
           max-size: 2G
           # Symlink compilers so g++, clang++ automatically go through ccache
           create-symlink: true
+      - name: Show ccache config (pre-build)
+        if: matrix.compiler != 'cl'
+        run: |
+          ccache -z || true          # zero stats for this job (optional)
+          ccache --show-config || true
       - name: Setup MSVC
         if: matrix.compiler == 'cl'
         uses: ilammy/msvc-dev-cmd@v1
