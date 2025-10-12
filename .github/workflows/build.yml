@@ -24,11 +24,7 @@ jobs:
     env:
       GITCRYPT_KEY_B64: ${{ secrets.GITCRYPT_KEY_B64 }}
       SCCACHE_GHA_ENABLED: "true"   # persist cache across runs via GHA backend
-      # --- ccache tuning for persistent hits across runners ---
-      CCACHE_BASEDIR: ${{ github.workspace }}   # normalize paths
-      CCACHE_NOHASHDIR: "true"                  # don't hash build dir
-      CCACHE_COMPILERCHECK: "content"           # tolerate minor compiler path/version shifts
-      CCACHE_COMPRESS: "1"                      # smaller cache uploads
+      SCCACHE_CACHE_SIZE: "2G"
     defaults:
       run:
         shell: bash
@@ -46,30 +42,14 @@ jobs:
         if: matrix.compiler == 'g++'
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-14
+          sudo apt-get install -y g++-14 sccache
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
       - name: Install clang
         if: matrix.compiler == 'clang++'
-        run: sudo apt-get update && sudo apt-get install -y clang
-      - name: Enable compiler cache (ccache)
+        run: sudo apt-get update && sudo apt-get install -y clang sccache
+      - name: Start sccache server (POSIX)
         if: matrix.compiler != 'cl'
-        uses: hendrikmuhs/ccache-action@v1.2.14
-        with:
-          max-size: 2G
-          create-symlink: true
-          restore: true
-          verbose: 0
-          variant: ccache
-          save: true
-          append-timestamp: false
-          key: ccache-${{ runner.os }}-gxx14
-          restore-keys: |
-            ccache-${{ runner.os }}-
-      - name: Show ccache config (pre-build)
-        if: matrix.compiler != 'cl'
-        run: |
-          ccache -z || true          # zero stats for this job (optional)
-          ccache --show-config || true
+        run: sccache --start-server
       - name: Setup MSVC
         if: matrix.compiler == 'cl'
         uses: ilammy/msvc-dev-cmd@v1
@@ -99,26 +79,36 @@ jobs:
             # link (fast)
             "$link_exe" /nologo /OUT:"$out_dir/$base.exe" "$out_dir/$base.obj"
           done
-      - name: Show sccache stats
-        if: matrix.compiler == 'cl'
-        run: ${SCCACHE_PATH} --show-stats || sccache --show-stats || true
       - name: Check sccache backend
         if: matrix.compiler == 'cl'
-        run: sccache --show-stats | findstr /R /C:"Cache location" || true
+        run: |
+          if [ -n "${SCCACHE_PATH:-}" ]; then
+            "${SCCACHE_PATH}" --show-stats | findstr /R /C:"Cache location" || true
+          else
+            sccache --show-stats | findstr /R /C:"Cache location" || true
+          fi
       - name: Compile all solutions
         if: matrix.compiler != 'cl'
         run: |
           set -e
           make clean
           make \
-            CXX="ccache ${{ matrix.compiler }}" \
+            CXX="sccache ${{ matrix.compiler }}" \
             BUILD_DIR="build/${{ matrix.compiler }}" \
             CXXFLAGS="-std=c++23 -Werror -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
             DIRS="2023 2024" \
             -j"$(nproc)"
-      - name: Show ccache stats
-        if: matrix.compiler != 'cl'
-        run: ccache -s || true
+      - name: Show sccache stats
+        if: always()
+        run: |
+          if [ -n "${SCCACHE_PATH:-}" ]; then
+            "${SCCACHE_PATH}" --show-stats || true
+            "${SCCACHE_PATH}" --stop-server || true
+          fi
+          if command -v sccache >/dev/null 2>&1; then
+            sccache --show-stats || true
+            sccache --stop-server || true
+          fi
       - name: Upload g++ artifacts
         if: matrix.compiler == 'g++' && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
