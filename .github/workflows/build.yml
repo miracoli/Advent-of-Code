@@ -26,7 +26,7 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"   # persist cache across runs via GHA backend
       # --- ccache tuning for persistent hits across runners ---
       CCACHE_BASEDIR: ${{ github.workspace }}   # normalize paths
-      CCACHE_HASHDIR: "false"                   # don't hash build dir
+      CCACHE_NOHASHDIR: "true"                  # don't hash build dir
       CCACHE_COMPILERCHECK: "content"           # tolerate minor compiler path/version shifts
       CCACHE_COMPRESS: "1"                      # smaller cache uploads
     defaults:
