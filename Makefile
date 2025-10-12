@@ -1,25 +1,43 @@
+# Two-phase build: .cpp -> .o (cacheable), then link -> executable
+# Expects these to be passed by CI (with sane defaults for local runs):
+#   CXX        := compiler (CI uses "ccache g++" or "ccache clang++")
+#   BUILD_DIR  := output dir (e.g., build/g++)
+#   CXXFLAGS   := compile flags
+#   DIRS       := source roots containing year/day (e.g., "2023 2024")
+
 SHELL := bash
 CXX ?= g++
-CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -MMD -MP -include cstdint \
-    -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
-LDFLAGS ?=
+DIRS ?= 2023 2024
 BUILD_DIR ?= build
 
-# allow overriding the searched dirs: make DIRS="2022 2023 2024"
-DIRS ?= 2023 2024
-CPP_SOURCES := $(shell find $(DIRS) -name '*.cpp' 2>/dev/null)
-BINARIES := $(CPP_SOURCES:%.cpp=$(BUILD_DIR)/%)
+# Collect all .cpp under DIRS (pattern like 2024/21/a.cpp)
+SOURCES  := $(foreach d,$(DIRS),$(wildcard $(d)/*/*.cpp))
+PROGRAMS := $(patsubst %.cpp,$(BUILD_DIR)/%,$(SOURCES))
+OBJECTS  := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
+DEPS     := $(OBJECTS:.o=.d)
+
+# Default flags (CI overrides these)
+CXXFLAGS ?= -std=c++23 -O2 -pipe -Wall -Wextra -pedantic -include cstdint \
+    -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
+LDFLAGS  ?=
 
 .PHONY: all clean
-all: $(BINARIES)
 
-# one binary per .cpp
-$(BUILD_DIR)/%: %.cpp
+all: $(PROGRAMS)
+
+# 1) Compile: cacheable step
+$(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+# 2) Link: fast step
+$(BUILD_DIR)/%: $(BUILD_DIR)/%.o
+	$(CXX) $(LDFLAGS) $^ -o $@
+
+# Track headers
+-include $(DEPS)
+
+.SECONDARY: $(OBJECTS)
 
 clean:
 	rm -rf $(BUILD_DIR)
-
-# include auto-generated dep files (safe if they don't exist yet)
--include $(BINARIES:%=%.d)
