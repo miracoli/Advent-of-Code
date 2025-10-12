@@ -56,9 +56,15 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           max-size: 2G
-          # rely on the action's stable key/restore-keys
-          # Symlink compilers so g++, clang++ automatically go through ccache
           create-symlink: true
+          restore: true
+          verbose: 0
+          variant: ccache
+          save: true
+          append-timestamp: false
+          key: ccache-${{ runner.os }}-gxx14
+          restore-keys: |
+            ccache-${{ runner.os }}-
       - name: Show ccache config (pre-build)
         if: matrix.compiler != 'cl'
         run: |
