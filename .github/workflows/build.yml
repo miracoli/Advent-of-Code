@@ -42,11 +42,16 @@ jobs:
         if: matrix.compiler == 'g++'
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-14 sccache
+          sudo apt-get install -y g++-14
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
       - name: Install clang
         if: matrix.compiler == 'clang++'
-        run: sudo apt-get update && sudo apt-get install -y clang sccache
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Enable sccache (POSIX)
+        if: matrix.compiler != 'cl'
+        uses: Mozilla-Actions/sccache-action@v0.0.9
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Start sccache server (POSIX)
         if: matrix.compiler != 'cl'
         run: sccache --start-server
