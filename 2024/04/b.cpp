@@ -16,11 +16,13 @@ int main() {
 
   for (int row = 1; row < grid.size() - 1; ++row) {
     for (int col = 1; col < grid[0].size() - 1; ++col) {
-      count += grid[row][col] == 'A' &&
+      if(grid[row][col] == 'A' &&
                ((grid[row - 1][col - 1] == 'M' && grid[row + 1][col + 1] == 'S' ||
                  grid[row - 1][col - 1] == 'S' && grid[row + 1][col + 1] == 'M') &&
                 (grid[row - 1][col + 1] == 'M' && grid[row + 1][col - 1] == 'S' ||
-                 grid[row - 1][col + 1] == 'S' && grid[row + 1][col - 1] == 'M'));
+                 grid[row - 1][col + 1] == 'S' && grid[row + 1][col - 1] == 'M'))) {
+        ++count;
+      }
     }
   }
   cout << count << endl;
