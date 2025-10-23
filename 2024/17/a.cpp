@@ -25,8 +25,10 @@ int main() {
   vector<int> program= contents[10] | views::split(',') | views::transform([](auto&& part) { return part[0] - '0'; }) | ranges::to<vector<int>>();
 
   for (int instructionPointer = 0; instructionPointer < program.size();) {
-    int opcode = program[instructionPointer++];
-    int operand = program[instructionPointer++];
+    int opcode = program[instructionPointer];
+    ++instructionPointer;
+    int operand = program[instructionPointer];
+    ++instructionPointer;
 
     switch (opcode) {
       case 0:  // adv
