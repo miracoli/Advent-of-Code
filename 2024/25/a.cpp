@@ -38,6 +38,5 @@ int main() {
     return (lock & key) == 0;
   };
 
-  cout << static_cast<uint64_t>(ranges::count_if(views::cartesian_product(locks, keys), isValidPair))
-       << endl;
+  cout << static_cast<uint64_t>(ranges::count_if(views::cartesian_product(locks, keys), isValidPair)) << endl;
 }
