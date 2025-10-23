@@ -14,7 +14,11 @@ bool isValid(uint64_t target, const vector<uint64_t>& nums, size_t idx) {
     }
 
     uint64_t curr = nums[idx];
-    uint64_t divisor = pow(10, (int) (log10(curr) + 1));
+    uint64_t divisor = 1;
+    uint64_t tmp = curr;
+    do {
+      divisor *= 10;
+    } while (t /= 10);
 
     return (target % curr == 0 && isValid(target / curr, nums, idx - 1)) ||
            (target > curr && isValid(target - curr, nums, idx - 1)) ||
