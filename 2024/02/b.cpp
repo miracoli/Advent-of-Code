@@ -31,7 +31,9 @@ int main() {
     istringstream iss(line);
     vector<int> nums{istream_iterator<int>(iss), {}};
     bool wrongSign = (signbit(nums[1] - nums[0]) + signbit(nums[2] - nums[1]) + signbit(nums[3] - nums[2])) < 2;
-    validCount += isValid(nums, wrongSign);
+    if (isValid(nums, wrongSign)) {
+      ++validCount;
+    }
   }
 
   cout << validCount << endl;
