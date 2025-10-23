@@ -24,8 +24,10 @@ int64_t rec(const vector<int64_t>& program, size_t instructionPointer, int64_t c
         
     A = newCurrent;
     for (int ip = 0; ip < instructions.size();) {
-      int64_t opcode = instructions[ip++];
-      int64_t operand = instructions[ip++];
+      int64_t opcode = instructions[ip];
+      ++ip;
+      int64_t operand = instructions[ip];
+      ++ip;
       switch (opcode) {
         case 0:  // adv
             A /= (1 << comboValue(operand));
