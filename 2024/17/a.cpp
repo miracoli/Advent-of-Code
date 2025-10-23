@@ -19,9 +19,9 @@ int main() {
   }
   bool first = true;
   vector<string> contents = ranges::istream_view<string>(input) | ranges::to<vector<string>>();
-  int64_t A = stoi(contents[2]);
-  int64_t B = stoi(contents[5]);
-  int64_t C = stoi(contents[8]);
+  int A = stoi(contents[2]);
+  int B = stoi(contents[5]);
+  int C = stoi(contents[8]);
   vector<int> program= contents[10] | views::split(',') | views::transform([](auto&& part) { return part[0] - '0'; }) | ranges::to<vector<int>>();
 
   for (int instructionPointer = 0; instructionPointer < program.size();) {
