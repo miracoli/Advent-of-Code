@@ -15,11 +15,9 @@ int main() {
 
   vector<uint32_t> locks;
   vector<uint32_t> keys;
-  for (string line; getline(file, line);) {
-    if (line.empty()) {
-      continue;
-    }
+  auto parseKeyOrLock = [&file, &locks, &keys]() {
     uint32_t packed = 0;
+    string line;
     for (size_t row = 0; row < 6 && getline(file, line); ++row) {
       for (size_t col = 0; col < 5; ++col) {
         if (line[col] == '#') {
@@ -27,7 +25,12 @@ int main() {
         }
       }
     }
-    (packed & (1 << 29) ? locks : keys).push_back(packed);
+    (packed & (1U << 29) ? locks : keys).push_back(packed);
+  };
+  for (string line; getline(file, line);) {
+    if (!line.empty()) {
+      parseKeyOrLock();
+    }
   }
 
   auto isValidPair = [](const auto& tup) {
@@ -35,5 +38,6 @@ int main() {
     return (lock & key) == 0;
   };
 
-  cout << static_cast<uint64_t>(ranges::count_if(views::cartesian_product(locks, keys), isValidPair)) << endl;
+  cout << static_cast<uint64_t>(ranges::count_if(views::cartesian_product(locks, keys), isValidPair))
+       << endl;
 }
