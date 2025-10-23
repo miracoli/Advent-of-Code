@@ -29,11 +29,11 @@ int main() {
       bool v1 = wireValues[input1];
       bool v2 = wireValues[input2];
       if (op == "AND") {
-        wireValues[output] = v1 & v2;
+        wireValues[output] = v1 && v2;
       } else if (op == "OR") {
-        wireValues[output] = v1 | v2;
+        wireValues[output] = v1 || v2;
       } else {
-        wireValues[output] = v1 ^ v2;
+        wireValues[output] = (v1 != v2);
       }
     } else {
       pendingGates.emplace(input1, input2, op, output);
