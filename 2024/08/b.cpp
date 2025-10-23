@@ -22,13 +22,14 @@ int main() {
     int cols;
     set<pair<int, int>> antinodes;
 
-    for (string line; getline(inputFile, line); ++rows) {
+    for (string line; getline(inputFile, line); ) {
         cols = static_cast<int>(line.size());
         for (int x = 0; x < line.size(); ++x) {
             if (line[x] != '.') {
                 antennas[line[x]].emplace_back(x, rows);
             }
         }
+        ++rows;
     }
 
     for (const auto& [freq, positions] : antennas) {
