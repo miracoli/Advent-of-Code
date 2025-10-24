@@ -30,7 +30,7 @@ int main() {
   for (string line; getline(file, line);) {
     istringstream iss(line);
     vector<int> nums{istream_iterator<int>(iss), {}};
-    bool wrongSign = (signbit(nums[1] - nums[0]) + signbit(nums[2] - nums[1]) + signbit(nums[3] - nums[2])) < 2;
+    bool wrongSign = (static_cast<int>(std::signbit(nums[1]-nums[0])) + static_cast<int>(std::signbit(nums[2]-nums[1])) + static_cast<int>(std::signbit(nums[3]-nums[2]))) < 2;
     if (isValid(nums, wrongSign)) {
       ++validCount;
     }
