@@ -27,12 +27,12 @@ uint64_t solve(string path, char depth = 0) {
     return result;
   }
 
-  auto curr = positions[depth ? 'a' : 'A'];
+  auto curr = positions.at(depth ? 'a' : 'A');
   auto avoid = depth ? array<int8_t, 2>{0, 0} : array<int8_t, 2>{3, 0};
   result = 0;
 
   for (char c : path) {
-    auto next = positions[c];
+    auto next = positions.at(c);
         
     string movePath = string(abs(next[0] - curr[0]), (next[0] < curr[0] ? '^' : 'v')) + string(abs(next[1] - curr[1]), (next[1] < curr[1] ? '<' : '>'));
     ranges::sort(movePath);
@@ -40,7 +40,7 @@ uint64_t solve(string path, char depth = 0) {
     uint64_t minLen = UINT64_MAX;
     do {
       auto temp = curr;
-      if (ranges::all_of(movePath, [&temp, &avoid](char step) { temp[0] += directions[step][0], temp[1] += directions[step][1]; return temp != avoid; })) {
+      if (ranges::all_of(movePath, [&temp, &avoid](char step) { temp[0] += directions.at(step)[0], temp[1] += directions.at(step)[1]; return temp != avoid; })) {
         minLen = min(minLen, (depth == limit ? movePath.size() + 1 : solve(movePath + 'a', depth + 1)));
       }
     } while (ranges::next_permutation(movePath).found);
