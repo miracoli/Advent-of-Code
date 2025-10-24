@@ -71,7 +71,7 @@ int main() {
     if (u != v) edges.emplace_back(u, v);
   }
 
-  int n = (int)name.size();
+  auto n = (int)name.size();
   connections.assign(n, {});
   for (auto [u, v] : edges) {
     connections[u].insert(v);
