@@ -27,7 +27,7 @@ uint64_t solve(const string& path, char depth = 0) {
     return result;
   }
 
-  auto curr = positions.ad(depth ? 'a' : 'A');
+  auto curr = positions.at(depth ? 'a' : 'A');
   auto avoid = depth ? array<int8_t, 2>{0, 0} : array<int8_t, 2>{3, 0};
   result = 0;
 
