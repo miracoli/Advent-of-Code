@@ -101,7 +101,7 @@ jobs:
             CXX="sccache ${{ matrix.compiler }}" \
             BUILD_DIR="build/${{ matrix.compiler }}" \
             CXXFLAGS="-std=c++23 -Werror -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
-            DIRS="2023 2024" \
+            DIRS="2015 2023 2024" \
             -j"$(nproc)"
       - name: Show sccache stats
         if: always()
