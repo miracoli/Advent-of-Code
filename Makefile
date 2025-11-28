@@ -7,7 +7,7 @@
 
 SHELL := bash
 CXX ?= g++
-DIRS ?= 2023 2024
+DIRS ?= 2015 2023 2024
 BUILD_DIR ?= build
 
 # Collect all .cpp under DIRS (pattern like 2024/21/a.cpp)
