@@ -91,7 +91,7 @@ jobs:
               BUILD_DIR="build" \
               CXXFLAGS="-std=c++23 -O2 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" \
               LDFLAGS="--coverage" \
-              DIRS="2023 2024" \
+              DIRS="2015 2023 2024" \
               -j"$(nproc)"
           '
 
